@@ -1,0 +1,12 @@
+event_enquiry:
+  new_event_enquiry:
+    - create a new laptop laptops
+    - open new laptop laptops
+  event_index_enquiry:
+    - покажи все события рядом
+    - покажи все события
+    - что происходит сегодня в городе
+    - какие события сегодня проходят
+  event_count_enquiry:
+    - total laptop laptops
+    - count laptop laptops
