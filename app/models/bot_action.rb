@@ -24,7 +24,7 @@ def classification_failed_enquiry(*args)
 end
 
 def self.greeting(id)
-  BotAction.create(bot_response: "Привет! Меня зовут Хлои. Я умею находить интересные события рядом. Что тебе интересно?", user_id: id, created_at: Time.now, updated_at: Time.now)
+  BotAction.create(bot_response: "Привет! Меня зовут Хлои. Я умею находить интересные события рядом. Что из предложенного тебе может понравится?", user_id: id, created_at: Time.now, updated_at: Time.now, context: "interests", context_number: 1) 
 end
 
 #3 nbayes iterates
@@ -74,7 +74,7 @@ end
  
   def more_event_enquiry(*args)
     laptop_count = Event.all.count
-    self.update_attribute(:bot_response, "There are #{event_count} events in total")
+    self.update_attribute(:bot_response, "There are events in total")
     #some action triggers
     return false
   end
