@@ -1,0 +1,29 @@
+%h1 Listing lessons
+
+%table
+  %thead
+    %tr
+      %th User say
+      
+      %th Intent string
+      %th Bot
+      %th User
+      %th
+      %th
+      %th
+
+  %tbody
+    - @lessons.each do |lesson|
+      %tr
+        %td= lesson.user_say
+        
+        %td= lesson.intent_string
+        %td= lesson.bot
+        %td= lesson.user
+        %td= link_to 'Show', lesson
+        %td= link_to 'Edit', edit_lesson_path(lesson)
+        %td= link_to 'Destroy', lesson, :method => :delete, :data => { :confirm => 'Are you sure?' }
+
+%br
+
+= link_to 'New Lesson', new_lesson_path

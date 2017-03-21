@@ -1,0 +1,18 @@
+%p#notice= notice
+
+%p
+  %b Input:
+  = @user_say.input
+%p
+  %b Lesson:
+  = @user_say.lesson
+%p
+  %b User:
+  = @user_say.user
+%p
+  %b Bot:
+  = @user_say.bot
+
+= link_to 'Edit', edit_user_say_path(@user_say)
+\|
+= link_to 'Back', user_says_path

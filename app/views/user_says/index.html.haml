@@ -1,0 +1,27 @@
+%h1 Listing user_says
+
+%table
+  %thead
+    %tr
+      %th Input
+      %th Lesson
+      %th User
+      %th Bot
+      %th
+      %th
+      %th
+
+  %tbody
+    - @user_says.each do |user_say|
+      %tr
+        %td= user_say.input
+        %td= user_say.lesson
+        %td= user_say.user
+        %td= user_say.bot
+        %td= link_to 'Show', user_say
+        %td= link_to 'Edit', edit_user_say_path(user_say)
+        %td= link_to 'Destroy', user_say, :method => :delete, :data => { :confirm => 'Are you sure?' }
+
+%br
+
+= link_to 'New User say', new_user_say_path

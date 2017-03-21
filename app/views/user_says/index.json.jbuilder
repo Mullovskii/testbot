@@ -1,0 +1,1 @@
+json.array! @user_says, partial: 'user_says/user_say', as: :user_say

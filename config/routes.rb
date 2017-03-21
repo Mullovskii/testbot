@@ -1,4 +1,8 @@
 Rails.application.routes.draw do
+  resources :user_says
+  resources :acts
+  resources :lessons
+  resources :bots
   post 'bot_actions/process_user_input'
 
   resources :products

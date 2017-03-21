@@ -1,0 +1,25 @@
+%h1 Listing acts
+
+%table
+  %thead
+    %tr
+      %th Bot say
+      %th Link
+      %th Lesson
+      %th
+      %th
+      %th
+
+  %tbody
+    - @acts.each do |act|
+      %tr
+        %td= act.bot_say
+        %td= act.link
+        %td= act.lesson
+        %td= link_to 'Show', act
+        %td= link_to 'Edit', edit_act_path(act)
+        %td= link_to 'Destroy', act, :method => :delete, :data => { :confirm => 'Are you sure?' }
+
+%br
+
+= link_to 'New Act', new_act_path

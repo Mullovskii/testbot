@@ -1,0 +1,15 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  user_say: MyString
+  bot_act: MyString
+  intent_string: MyString
+  bot: one
+  user: one
+
+two:
+  user_say: MyString
+  bot_act: MyString
+  intent_string: MyString
+  bot: two
+  user: two

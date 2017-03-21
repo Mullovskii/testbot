@@ -1,0 +1,11 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  bot_say: MyString
+  link: MyString
+  lesson: one
+
+two:
+  bot_say: MyString
+  link: MyString
+  lesson: two

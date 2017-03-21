@@ -1,0 +1,23 @@
+%h1 Listing bots
+
+%table
+  %thead
+    %tr
+      %th Name
+      %th User
+      %th
+      %th
+      %th
+
+  %tbody
+    - @bots.each do |bot|
+      %tr
+        %td= bot.name
+        %td= bot.user
+        %td= link_to 'Show', bot
+        %td= link_to 'Edit', edit_bot_path(bot)
+        %td= link_to 'Destroy', bot, :method => :delete, :data => { :confirm => 'Are you sure?' }
+
+%br
+
+= link_to 'New Bot', new_bot_path

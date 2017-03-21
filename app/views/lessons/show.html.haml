@@ -1,0 +1,19 @@
+%p#notice= notice
+
+%p
+  %b User say:
+  = @lesson.user_say
+
+%p
+  %b Intent string:
+  = @lesson.intent
+%p
+  %b Bot:
+  = @lesson.bot
+%p
+  %b User:
+  = @lesson.user
+
+= link_to 'Edit', edit_lesson_path(@lesson)
+\|
+= link_to 'Back', lessons_path

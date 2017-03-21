@@ -1,0 +1,74 @@
+%p#notice= notice
+
+= link_to 'Edit', edit_bot_path(@bot)
+\|
+= link_to 'Back', bots_path
+
+%h1
+  %b Bot:
+  = @bot.name
+%p
+  %b By:
+  = @bot.user.email
+
+- @bot_lessons.each do |lesson|
+  =lesson.user_says.length
+          
+/ =@bot.lessons.destroy_all
+%p
+  %h3
+    %b Intents:
+%h5 
+  Type 1. User acts first:
+
+= form_for @lesson do |f|
+  = f.label "New intent"
+  = f.text_field :intent
+  = f.hidden_field :bot_id, value: @bot.id
+  = f.hidden_field :user_proactive, value: true
+  = f.submit '+'
+
+
+%ul
+  - @bot_lessons.each do |lesson|
+    %h4
+      %b= lesson.intent
+    = form_for @user_say do |f|
+      .field
+        = f.label "1. User says"
+        = f.text_field :input
+        = f.hidden_field :intent, value: lesson.intent
+        = f.hidden_field :bot_id, value: @bot.id
+        = f.hidden_field :lesson_id, value: lesson.id
+        = f.submit '+'
+
+    %ul
+      - lesson.user_says.each do |user_say|
+        %li= user_say.input
+
+    = form_for @act do |f|
+      .field
+        = f.label "2. Bot responds"
+        = f.text_field :bot_say
+      %ul
+        %li= f.label "Link to API"
+        = f.text_field :link
+        %li= f.label "Yes or No Response expected from user"
+        = f.check_box :yes_no
+
+        %li= f.label "Repeating bot action"
+        = f.check_box :recurrent
+
+        %li= f.label "Repeat at"
+        = time_select :shoot_at, :default => {:hour => '10', :minute => '20'}
+
+        = f.hidden_field :intent, value: lesson.intent
+        = f.hidden_field :bot_id, value: @bot.id
+        = f.hidden_field :lesson_id, value: lesson.id
+      .actions
+        = f.submit '+'
+    %ul
+      - lesson.acts.each do |act|
+        %li= act.bot_say
+
+

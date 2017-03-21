@@ -1,0 +1,17 @@
+%p#notice= notice
+
+%p
+  %b Bot say:
+  = @act.bot_say
+  
+
+%p
+  %b Link:
+  = @act.link
+%p
+  %b Lesson:
+  = @act.lesson
+
+= link_to 'Edit', edit_act_path(@act)
+\|
+= link_to 'Back', acts_path
