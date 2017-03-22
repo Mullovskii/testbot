@@ -23,5 +23,9 @@
           = form_for bot_action, url: bot_actions_process_user_input_path, remote: true do |f|
             .input-group
               = f.text_field :user_input, autocomplete: 'off', class: 'form-control input-sm', id: 'btn-input', placeholder: 'Type your message here...'
+              = f.hidden_field :bot_id
+              - if @bot
+                = f.hidden_field :bot_id, value: @bot.id
+
               %span.input-group-btn
                 = f.submit 'send', class: 'btn btn-sm', id: 'btn-chat'

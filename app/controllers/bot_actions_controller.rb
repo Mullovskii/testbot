@@ -8,7 +8,9 @@ class BotActionsController < ApplicationController
       #puts "\n\nCOMPUTED PATH: #{computed_path.inspect}\n\n"
       if computed_path.present?
         #redirection to computed_path
-        render js: "window.location = '#{computed_path}'"
+        # render js: "window.location = '#{computed_path}'"
+        redirect_to @bot_action.bot
+        
       end
     end
     respond_to do |format|
@@ -19,6 +21,6 @@ class BotActionsController < ApplicationController
   private
  
   def bot_action_params
-    params.require(:bot_action).permit(:user_input, :user_id)
+    params.require(:bot_action).permit(:user_input, :user_id, :bot_id, :intent)
   end
 end

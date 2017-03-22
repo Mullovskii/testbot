@@ -32,11 +32,13 @@ ActiveRecord::Schema.define(version: 20170320210918) do
   create_table "bot_actions", force: :cascade do |t|
     t.string   "user_input"
     t.string   "bot_response"
-    t.string   "context"
+    t.string   "intent"
     t.integer  "context_number"
     t.integer  "user_id"
+    t.integer  "bot_id"
     t.datetime "created_at",     null: false
     t.datetime "updated_at",     null: false
+    t.index ["bot_id"], name: "index_bot_actions_on_bot_id"
     t.index ["user_id"], name: "index_bot_actions_on_user_id"
   end
 
