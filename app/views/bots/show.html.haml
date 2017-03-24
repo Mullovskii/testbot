@@ -38,6 +38,11 @@
 
     .row 
       .col-md-6
+        %ul
+          - lesson.user_says.each do |user_say|
+            %li= user_say.input
+            = link_to 'Destroy', user_say,  method: :delete, data: { confirm: 'Are you sure?' } 
+        
         = form_for @user_say do |f|
           .field
             = f.label "1. User says"
@@ -47,15 +52,14 @@
             = f.hidden_field :lesson_id, value: lesson.id
             = f.submit '+'
 
-        %ul
-          - lesson.user_says.each do |user_say|
-            %li= user_say.input
-            = link_to 'Destroy', user_say,  method: :delete, data: { confirm: 'Are you sure?' } 
-
 
 
       .col-md-6
-      
+        %ul
+          - lesson.acts.each do |act|
+            %li= act.bot_say
+            = link_to 'Destroy',  act,  method: :delete, data: { confirm: 'Are you sure?' } 
+        
         = form_for @act do |f|
           .field
             = f.label "2. Bot responds"
@@ -63,25 +67,7 @@
             = f.hidden_field :intent, value: lesson.intent
             = f.hidden_field :bot_id, value: @bot.id
             = f.hidden_field :lesson_id, value: lesson.id
-          / %ul
-          /   %li= f.label "Link to API"
-          /   = f.text_field :link
-          /   %li= f.label "Yes or No Response expected from user"
-          /   = f.check_box :yes_no
-
-          /   %li= f.label "Repeating bot action"
-          /   = f.check_box :recurrent
-
-          /   %li= f.label "Repeat at"
-          /   = time_select :shoot_at, :default => {:hour => '10', :minute => '20'}
-
-
-          .actions
             = f.submit '+'
-        %ul
-          - lesson.acts.each do |act|
-            %li= act.bot_say
-            = link_to 'Destroy',  act,  method: :delete, data: { confirm: 'Are you sure?' } 
 
 
 
@@ -93,12 +79,10 @@
   + bot intent
 
 = form_for @bot_intent do |f|
-  / = f.label "+ bot intent"
   = f.text_field :intent
   = f.hidden_field :bot_id, value: @bot.id
   = f.hidden_field :user_proactive, value: false
   = f.submit '+'
-
 
 %ul
   - @bot_intents.each do |lesson|
@@ -106,12 +90,13 @@
       %b= lesson.intent
       = link_to 'Destroy',  lesson,  method: :delete, data: { confirm: 'Are you sure?' } 
 
-
-
     .row 
-
       .col-md-6
-      
+        %ul
+          - lesson.acts.each do |act|
+            %li= act.bot_say
+            = link_to 'Destroy',  act,  method: :delete, data: { confirm: 'Are you sure?' } 
+        
         = form_for @act do |f|
           .field
             = f.label "1. Bot says"
@@ -119,29 +104,16 @@
             = f.hidden_field :intent, value: lesson.intent
             = f.hidden_field :bot_id, value: @bot.id
             = f.hidden_field :lesson_id, value: lesson.id
-          / %ul
-          /   %li= f.label "Link to API"
-          /   = f.text_field :link
-          /   %li= f.label "Yes or No Response expected from user"
-          /   = f.check_box :yes_no
-
-          /   %li= f.label "Repeating bot action"
-          /   = f.check_box :recurrent
-
-          /   %li= f.label "Repeat at"
-          /   = time_select :shoot_at, :default => {:hour => '10', :minute => '20'}
-
-           
-          .actions
             = f.submit '+'
-        %ul
-          - lesson.acts.each do |act|
-            %li= act.bot_say
-            = link_to 'Destroy',  act,  method: :delete, data: { confirm: 'Are you sure?' } 
 
 
 
       .col-md-6
+        %ul
+          - lesson.user_says.each do |user_say|
+            %li= user_say.input
+            = link_to 'Destroy',  user_say,  method: :delete, data: { confirm: 'Are you sure?' } 
+        
         = form_for @user_say do |f|
           .field
             = f.label "1. User might respond"
@@ -150,11 +122,6 @@
             = f.hidden_field :bot_id, value: @bot.id
             = f.hidden_field :lesson_id, value: lesson.id
             = f.submit '+'
-
-        %ul
-          - lesson.user_says.each do |user_say|
-            %li= user_say.input
-            = link_to 'Destroy',  user_say,  method: :delete, data: { confirm: 'Are you sure?' } 
 
 
       
