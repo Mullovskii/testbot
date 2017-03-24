@@ -1,14 +1,38 @@
 %p#notice= notice
 
 %p
+  %b Bot:
+  = @event.bot
+%p
+  %b Lesson:
+  = @event.lesson
+%p
   %b Name:
   = @event.name
+%p
+  %b Place:
+  = @event.place
 %p
   %b Description:
   = @event.description
 %p
+  %b Organizer:
+  = @event.organizer
+%p
+  %b Free:
+  = @event.free
+%p
   %b Price:
   = @event.price
+%p
+  %b Link:
+  = @event.link
+%p
+  %b Photo:
+  = @event.photo
+%p
+  %b Token:
+  = @event.token
 
 = link_to 'Edit', edit_event_path(@event)
 \|

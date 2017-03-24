@@ -3,9 +3,17 @@
 %table
   %thead
     %tr
+      %th Bot
+      %th Lesson
       %th Name
+      %th Place
       %th Description
+      %th Organizer
+      %th Free
       %th Price
+      %th Link
+      %th Photo
+      %th Token
       %th
       %th
       %th
@@ -13,9 +21,17 @@
   %tbody
     - @events.each do |event|
       %tr
+        %td= event.bot
+        %td= event.lesson
         %td= event.name
+        %td= event.place
         %td= event.description
+        %td= event.organizer
+        %td= event.free
         %td= event.price
+        %td= event.link
+        %td= event.photo
+        %td= event.token
         %td= link_to 'Show', event
         %td= link_to 'Edit', edit_event_path(event)
         %td= link_to 'Destroy', event, :method => :delete, :data => { :confirm => 'Are you sure?' }

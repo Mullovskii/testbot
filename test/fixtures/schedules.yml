@@ -1,0 +1,31 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  bot: one
+  lesson: one
+  time: 2017-03-24 23:41:43
+  repeat: false
+  repeat_daily: false
+  remind_over: 1
+  sunday: false
+  monday: false
+  tuesday: false
+  wednesday: false
+  thursday: false
+  friday: false
+  saturday: false
+
+two:
+  bot: two
+  lesson: two
+  time: 2017-03-24 23:41:43
+  repeat: false
+  repeat_daily: false
+  remind_over: 1
+  sunday: false
+  monday: false
+  tuesday: false
+  wednesday: false
+  thursday: false
+  friday: false
+  saturday: false

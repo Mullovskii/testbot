@@ -7,13 +7,37 @@
           %li= msg
 
   .field
+    = f.label :bot
+    = f.text_field :bot
+  .field
+    = f.label :lesson
+    = f.text_field :lesson
+  .field
     = f.label :name
     = f.text_field :name
+  .field
+    = f.label :place
+    = f.text_field :place
   .field
     = f.label :description
     = f.text_area :description
   .field
+    = f.label :organizer
+    = f.text_field :organizer
+  .field
+    = f.label :free
+    = f.check_box :free
+  .field
     = f.label :price
-    = f.text_field :price
+    = f.number_field :price
+  .field
+    = f.label :link
+    = f.text_field :link
+  .field
+    = f.label :photo
+    = f.text_field :photo
+  .field
+    = f.label :token
+    = f.text_field :token
   .actions
     = f.submit 'Save'

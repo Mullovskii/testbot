@@ -10,20 +10,16 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170320210918) do
+ActiveRecord::Schema.define(version: 20170324205158) do
 
   create_table "acts", force: :cascade do |t|
     t.string   "bot_say"
     t.string   "intent"
-    t.string   "link"
-    t.boolean  "yes_no",     default: false
     t.integer  "lesson_id"
     t.integer  "bot_id"
     t.integer  "user_id"
-    t.time     "shoot_at"
-    t.boolean  "recurrent",  default: false
-    t.datetime "created_at",                 null: false
-    t.datetime "updated_at",                 null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["bot_id"], name: "index_acts_on_bot_id"
     t.index ["lesson_id"], name: "index_acts_on_lesson_id"
     t.index ["user_id"], name: "index_acts_on_user_id"
@@ -33,11 +29,10 @@ ActiveRecord::Schema.define(version: 20170320210918) do
     t.string   "user_input"
     t.string   "bot_response"
     t.string   "intent"
-    t.integer  "context_number"
     t.integer  "user_id"
     t.integer  "bot_id"
-    t.datetime "created_at",     null: false
-    t.datetime "updated_at",     null: false
+    t.datetime "created_at",   null: false
+    t.datetime "updated_at",   null: false
     t.index ["bot_id"], name: "index_bot_actions_on_bot_id"
     t.index ["user_id"], name: "index_bot_actions_on_user_id"
   end
@@ -51,22 +46,24 @@ ActiveRecord::Schema.define(version: 20170320210918) do
   end
 
   create_table "events", force: :cascade do |t|
+    t.integer  "bot_id"
+    t.integer  "lesson_id"
     t.string   "name"
+    t.string   "place"
     t.text     "description"
-    t.float    "price"
+    t.string   "organizer"
+    t.boolean  "free"
+    t.integer  "price"
+    t.string   "link"
+    t.string   "photo"
+    t.string   "token"
     t.datetime "created_at",  null: false
     t.datetime "updated_at",  null: false
-  end
-
-  create_table "interests", force: :cascade do |t|
-    t.string   "name"
-    t.text     "description"
-    t.datetime "created_at",  null: false
-    t.datetime "updated_at",  null: false
+    t.index ["bot_id"], name: "index_events_on_bot_id"
+    t.index ["lesson_id"], name: "index_events_on_lesson_id"
   end
 
   create_table "lessons", force: :cascade do |t|
-    t.string   "user_say"
     t.string   "intent"
     t.boolean  "user_proactive", default: true
     t.integer  "bot_id"
@@ -77,11 +74,37 @@ ActiveRecord::Schema.define(version: 20170320210918) do
     t.index ["user_id"], name: "index_lessons_on_user_id"
   end
 
-  create_table "products", force: :cascade do |t|
-    t.string   "name"
-    t.text     "description"
-    t.datetime "created_at",  null: false
-    t.datetime "updated_at",  null: false
+  create_table "posts", force: :cascade do |t|
+    t.integer  "bot_id"
+    t.integer  "lesson_id"
+    t.string   "title"
+    t.text     "body"
+    t.string   "link"
+    t.string   "photo"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["bot_id"], name: "index_posts_on_bot_id"
+    t.index ["lesson_id"], name: "index_posts_on_lesson_id"
+  end
+
+  create_table "schedules", force: :cascade do |t|
+    t.integer  "bot_id"
+    t.integer  "lesson_id"
+    t.time     "time"
+    t.boolean  "repeat"
+    t.boolean  "repeat_daily"
+    t.integer  "remind_over"
+    t.boolean  "sunday"
+    t.boolean  "monday"
+    t.boolean  "tuesday"
+    t.boolean  "wednesday"
+    t.boolean  "thursday"
+    t.boolean  "friday"
+    t.boolean  "saturday"
+    t.datetime "created_at",   null: false
+    t.datetime "updated_at",   null: false
+    t.index ["bot_id"], name: "index_schedules_on_bot_id"
+    t.index ["lesson_id"], name: "index_schedules_on_lesson_id"
   end
 
   create_table "user_says", force: :cascade do |t|

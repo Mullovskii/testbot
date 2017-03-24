@@ -38,6 +38,8 @@
 
     .row 
       .col-md-6
+        
+        %h4 Если пользователь говорит
         %ul
           - lesson.user_says.each do |user_say|
             %li= user_say.input
@@ -45,7 +47,7 @@
         
         = form_for @user_say do |f|
           .field
-            = f.label "1. User says"
+            = f.label "Пользователь говорит"
             = f.text_field :input
             = f.hidden_field :intent, value: lesson.intent
             = f.hidden_field :bot_id, value: @bot.id
@@ -55,6 +57,8 @@
 
 
       .col-md-6
+        
+        %h4 Бот отвечат
         %ul
           - lesson.acts.each do |act|
             %li= act.bot_say
@@ -62,7 +66,7 @@
         
         = form_for @act do |f|
           .field
-            = f.label "2. Bot responds"
+            = f.label "Бот отвечает"
             = f.text_field :bot_say
             = f.hidden_field :intent, value: lesson.intent
             = f.hidden_field :bot_id, value: @bot.id
@@ -91,33 +95,57 @@
       = link_to 'Destroy',  lesson,  method: :delete, data: { confirm: 'Are you sure?' } 
 
     .row 
-      .col-md-6
+      .col-md-4
+        
+        %h4 Бот говорит первый
         %ul
           - lesson.acts.each do |act|
             %li= act.bot_say
+            %li= act.intent
             = link_to 'Destroy',  act,  method: :delete, data: { confirm: 'Are you sure?' } 
         
         = form_for @act do |f|
           .field
-            = f.label "1. Bot says"
+            = f.label "Бот говорит"
             = f.text_field :bot_say
-            = f.hidden_field :intent, value: lesson.intent
+            = f.hidden_field :intent, value: "act"
             = f.hidden_field :bot_id, value: @bot.id
             = f.hidden_field :lesson_id, value: lesson.id
             = f.submit '+'
 
 
 
-      .col-md-6
+      .col-md-4
+        
+        %h4 Пользователь отвечает
         %ul
           - lesson.user_says.each do |user_say|
             %li= user_say.input
+            %li= user_say.intent
             = link_to 'Destroy',  user_say,  method: :delete, data: { confirm: 'Are you sure?' } 
         
         = form_for @user_say do |f|
           .field
-            = f.label "1. User might respond"
+            = f.label "Пользователь отвечает"
             = f.text_field :input
+            = f.hidden_field :intent, value: lesson.intent
+            = f.hidden_field :bot_id, value: @bot.id
+            = f.hidden_field :lesson_id, value: lesson.id
+            = f.submit '+'
+
+      .col-md-4
+        
+        %h4 Бот реагирует на ответ
+        %ul
+          - lesson.acts.each do |act|
+            %li= act.bot_say
+            %li= act.intent
+            = link_to 'Destroy',  act,  method: :delete, data: { confirm: 'Are you sure?' } 
+        
+        = form_for @act do |f|
+          .field
+            = f.label "Бот реагирует на ответ"
+            = f.text_field :bot_say
             = f.hidden_field :intent, value: lesson.intent
             = f.hidden_field :bot_id, value: @bot.id
             = f.hidden_field :lesson_id, value: lesson.id

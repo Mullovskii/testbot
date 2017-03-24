@@ -1,11 +1,27 @@
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 one:
+  bot: one
+  lesson: one
   name: MyString
+  place: MyString
   description: MyText
-  price: 1.5
+  organizer: MyString
+  free: false
+  price: 1
+  link: MyString
+  photo: MyString
+  token: MyString
 
 two:
+  bot: two
+  lesson: two
   name: MyString
+  place: MyString
   description: MyText
-  price: 1.5
+  organizer: MyString
+  free: false
+  price: 1
+  link: MyString
+  photo: MyString
+  token: MyString

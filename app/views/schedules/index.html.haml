@@ -1,0 +1,45 @@
+%h1 Listing schedules
+
+%table
+  %thead
+    %tr
+      %th Bot
+      %th Lesson
+      %th Time
+      %th Repeat
+      %th Repeat daily
+      %th Remind over
+      %th Sunday
+      %th Monday
+      %th Tuesday
+      %th Wednesday
+      %th Thursday
+      %th Friday
+      %th Saturday
+      %th
+      %th
+      %th
+
+  %tbody
+    - @schedules.each do |schedule|
+      %tr
+        %td= schedule.bot
+        %td= schedule.lesson
+        %td= schedule.time
+        %td= schedule.repeat
+        %td= schedule.repeat_daily
+        %td= schedule.remind_over
+        %td= schedule.sunday
+        %td= schedule.monday
+        %td= schedule.tuesday
+        %td= schedule.wednesday
+        %td= schedule.thursday
+        %td= schedule.friday
+        %td= schedule.saturday
+        %td= link_to 'Show', schedule
+        %td= link_to 'Edit', edit_schedule_path(schedule)
+        %td= link_to 'Destroy', schedule, :method => :delete, :data => { :confirm => 'Are you sure?' }
+
+%br
+
+= link_to 'New Schedule', new_schedule_path

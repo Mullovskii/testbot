@@ -1,0 +1,45 @@
+%p#notice= notice
+
+%p
+  %b Bot:
+  = @schedule.bot
+%p
+  %b Lesson:
+  = @schedule.lesson
+%p
+  %b Time:
+  = @schedule.time
+%p
+  %b Repeat:
+  = @schedule.repeat
+%p
+  %b Repeat daily:
+  = @schedule.repeat_daily
+%p
+  %b Remind over:
+  = @schedule.remind_over
+%p
+  %b Sunday:
+  = @schedule.sunday
+%p
+  %b Monday:
+  = @schedule.monday
+%p
+  %b Tuesday:
+  = @schedule.tuesday
+%p
+  %b Wednesday:
+  = @schedule.wednesday
+%p
+  %b Thursday:
+  = @schedule.thursday
+%p
+  %b Friday:
+  = @schedule.friday
+%p
+  %b Saturday:
+  = @schedule.saturday
+
+= link_to 'Edit', edit_schedule_path(@schedule)
+\|
+= link_to 'Back', schedules_path

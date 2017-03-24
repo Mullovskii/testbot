@@ -1,0 +1,2 @@
+json.extract! schedule, :id, :bot_id, :lesson_id, :time, :repeat, :repeat_daily, :remind_over, :sunday, :monday, :tuesday, :wednesday, :thursday, :friday, :saturday, :created_at, :updated_at
+json.url schedule_url(schedule, format: :json)

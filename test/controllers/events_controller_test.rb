@@ -17,7 +17,7 @@ class EventsControllerTest < ActionDispatch::IntegrationTest
 
   test "should create event" do
     assert_difference('Event.count') do
-      post events_url, params: { event: { description: @event.description, name: @event.name, price: @event.price } }
+      post events_url, params: { event: { bot_id: @event.bot_id, description: @event.description, free: @event.free, lesson_id: @event.lesson_id, link: @event.link, name: @event.name, organizer: @event.organizer, photo: @event.photo, place: @event.place, price: @event.price, token: @event.token } }
     end
 
     assert_redirected_to event_url(Event.last)
@@ -34,7 +34,7 @@ class EventsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should update event" do
-    patch event_url(@event), params: { event: { description: @event.description, name: @event.name, price: @event.price } }
+    patch event_url(@event), params: { event: { bot_id: @event.bot_id, description: @event.description, free: @event.free, lesson_id: @event.lesson_id, link: @event.link, name: @event.name, organizer: @event.organizer, photo: @event.photo, place: @event.place, price: @event.price, token: @event.token } }
     assert_redirected_to event_url(@event)
   end
 

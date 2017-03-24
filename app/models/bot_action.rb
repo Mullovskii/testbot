@@ -42,7 +42,7 @@ def classification_failed_enquiry(*args)
 end
 
 def self.greeting(id)
-  BotAction.create(bot_response: "Привет! Меня зовут Хлои. Я умею находить интересные события рядом. Что из предложенного тебе может понравится?", user_id: id, created_at: Time.now, updated_at: Time.now, intent: "interests", context_number: 1) 
+  BotAction.create(bot_response: "Привет! Меня зовут Хлои. Я умею находить интересные события рядом. Что из предложенного тебе может понравится?", user_id: id, created_at: Time.now, updated_at: Time.now, intent: "interests")
 end
 
 def hello
