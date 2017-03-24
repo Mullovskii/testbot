@@ -10,10 +10,13 @@ class BotsController < ApplicationController
   # GET /bots/1
   # GET /bots/1.json
   def show
+    @user_intent = Lesson.new
+    @bot_intent = Lesson.new
     @lesson = Lesson.new
     @user_say = UserSay.new
     @act = Act.new
-    @bot_lessons = @bot.lessons
+    @bot_intents = @bot.lessons.where(user_proactive: false)
+    @user_intents = @bot.lessons.where(user_proactive: true)
   end
 
   # GET /bots/new

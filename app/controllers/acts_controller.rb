@@ -42,7 +42,7 @@ class ActsController < ApplicationController
   def update
     respond_to do |format|
       if @act.update(act_params)
-        format.html { redirect_to @act.bot, notice: 'Act was successfully updated.' }
+        format.html { redirect_to :back, notice: 'Act was successfully updated.' }
         format.json { render :show, status: :ok, location: @act }
       else
         format.html { redirect_to @act.bot }
@@ -56,7 +56,7 @@ class ActsController < ApplicationController
   def destroy
     @act.destroy
     respond_to do |format|
-      format.html { redirect_to acts_url, notice: 'Act was successfully destroyed.' }
+      format.html { redirect_to :back, notice: 'Act was successfully destroyed.' }
       format.json { head :no_content }
     end
   end

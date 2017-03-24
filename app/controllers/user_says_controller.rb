@@ -42,7 +42,7 @@ class UserSaysController < ApplicationController
   def update
     respond_to do |format|
       if @user_say.update(user_say_params)
-        format.html { redirect_to @user_say, notice: 'User say was successfully updated.' }
+        format.html { redirect_to :back, notice: 'User say was successfully updated.' }
         format.json { render :show, status: :ok, location: @user_say }
       else
         format.html { render :edit }
@@ -56,7 +56,7 @@ class UserSaysController < ApplicationController
   def destroy
     @user_say.destroy
     respond_to do |format|
-      format.html { redirect_to user_says_url, notice: 'User say was successfully destroyed.' }
+      format.html { redirect_to :back, notice: 'User say was successfully destroyed.' }
       format.json { head :no_content }
     end
   end

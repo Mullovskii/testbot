@@ -31,7 +31,7 @@ class LessonsController < ApplicationController
         format.html { redirect_to @lesson.bot, notice: 'Lesson was successfully created.' }
         format.json { render :show, status: :created, location: @lesson }
       else
-        format.html { redirect_to @lesson.bot }
+        format.html { redirect_to @current_user.bot }
         format.json { render json: @lesson.errors, status: :unprocessable_entity }
       end
     end
@@ -42,7 +42,7 @@ class LessonsController < ApplicationController
   def update
     respond_to do |format|
       if @lesson.update(lesson_params)
-        format.html { redirect_to @lesson, notice: 'Lesson was successfully updated.' }
+        format.html { redirect_to :back, notice: 'Lesson was successfully updated.' }
         format.json { render :show, status: :ok, location: @lesson }
       else
         format.html { render :edit }
@@ -56,7 +56,7 @@ class LessonsController < ApplicationController
   def destroy
     @lesson.destroy
     respond_to do |format|
-      format.html { redirect_to lessons_url, notice: 'Lesson was successfully destroyed.' }
+      format.html { redirect_to :back, notice: 'Lesson was successfully destroyed.' }
       format.json { head :no_content }
     end
   end
