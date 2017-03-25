@@ -20,13 +20,9 @@ class BotsController < ApplicationController
     @user_say = UserSay.new
     #bot reaction
     @act = Act.new
-    #media attached to act
-    if @bot.posts.length < 1
-      @post = Post.new
-    else
-      @post = @bot.posts.take
-    end
     
+    #media attached to act
+    @post = Post.new
     @photo = Post.new
     @link = Post.new
     @video = Post.new
