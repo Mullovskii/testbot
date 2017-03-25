@@ -10,6 +10,7 @@ class CreatePosts < ActiveRecord::Migration[5.0]
       t.string :link
       t.string :photo
       t.string :token
+      t.boolean :proactive, default: false
       t.timestamps
     end
   end

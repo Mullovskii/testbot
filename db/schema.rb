@@ -18,8 +18,9 @@ ActiveRecord::Schema.define(version: 20170324205158) do
     t.integer  "lesson_id"
     t.integer  "bot_id"
     t.integer  "user_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.boolean  "proactive",  default: false
+    t.datetime "created_at",                 null: false
+    t.datetime "updated_at",                 null: false
     t.index ["bot_id"], name: "index_acts_on_bot_id"
     t.index ["lesson_id"], name: "index_acts_on_lesson_id"
     t.index ["user_id"], name: "index_acts_on_user_id"
@@ -84,8 +85,9 @@ ActiveRecord::Schema.define(version: 20170324205158) do
     t.string   "link"
     t.string   "photo"
     t.string   "token"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.boolean  "proactive",  default: false
+    t.datetime "created_at",                 null: false
+    t.datetime "updated_at",                 null: false
     t.index ["bot_id"], name: "index_posts_on_bot_id"
     t.index ["lesson_id"], name: "index_posts_on_lesson_id"
   end

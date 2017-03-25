@@ -9,7 +9,7 @@ class CreateActs < ActiveRecord::Migration[5.0]
       t.references :bot, foreign_key: true
       t.references :user, foreign_key: true
       # t.time :shoot_at
-      # t.boolean :recurrent, default: false
+      t.boolean :proactive, default: false
       t.timestamps
     end
   end

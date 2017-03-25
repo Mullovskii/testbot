@@ -69,6 +69,6 @@ class ActsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def act_params
-      params.require(:act).permit(:bot_say, :link, :lesson_id, :bot_id, :intent, :yes_no, :shoot_at, :recurrent )
+      params.require(:act).permit(:bot_say, :lesson_id, :bot_id, :intent, :proactive)
     end
 end
