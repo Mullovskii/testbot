@@ -48,6 +48,7 @@ ActiveRecord::Schema.define(version: 20170324205158) do
   create_table "events", force: :cascade do |t|
     t.integer  "bot_id"
     t.integer  "lesson_id"
+    t.string   "intent"
     t.string   "name"
     t.string   "place"
     t.text     "description"
@@ -77,10 +78,12 @@ ActiveRecord::Schema.define(version: 20170324205158) do
   create_table "posts", force: :cascade do |t|
     t.integer  "bot_id"
     t.integer  "lesson_id"
+    t.string   "intent"
     t.string   "title"
     t.text     "body"
     t.string   "link"
     t.string   "photo"
+    t.string   "token"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["bot_id"], name: "index_posts_on_bot_id"
@@ -90,6 +93,7 @@ ActiveRecord::Schema.define(version: 20170324205158) do
   create_table "schedules", force: :cascade do |t|
     t.integer  "bot_id"
     t.integer  "lesson_id"
+    t.string   "intent"
     t.time     "time"
     t.boolean  "repeat"
     t.boolean  "repeat_daily"

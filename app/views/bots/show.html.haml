@@ -13,6 +13,7 @@
 
 
 
+
 %p
   %h3
     %b Intents:
@@ -72,6 +73,30 @@
             = f.hidden_field :bot_id, value: @bot.id
             = f.hidden_field :lesson_id, value: lesson.id
             = f.submit '+'
+        / attached media
+        %h5 Прикрепить к ответу:
+        .col-md-2
+          %h6 Post
+          = form_for @post do |f|
+            .field  
+              = f.hidden_field :bot_id, value: @bot.id
+              = f.hidden_field :lesson_id, value: lesson.id
+              = f.hidden_field :intent, value: lesson.intent
+            .field
+              = f.label :title
+              = f.text_field :title
+              / = f.text_field :intent
+            .field
+              = f.label :body
+              = f.text_area :body
+            .field
+              = f.label :link
+              = f.text_field :link
+            .field
+              = f.label :photo
+              = f.text_field :photo
+            .actions
+              = f.submit 'Save'
 
 
 

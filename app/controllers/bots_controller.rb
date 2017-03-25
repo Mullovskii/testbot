@@ -10,11 +10,28 @@ class BotsController < ApplicationController
   # GET /bots/1
   # GET /bots/1.json
   def show
+    #intent = talk category when user shoots first
     @user_intent = Lesson.new
+    #intent = talk category when bot starts the talk
     @bot_intent = Lesson.new
+    #intent = talk category
     @lesson = Lesson.new
+    #user_input
     @user_say = UserSay.new
+    #bot reaction
     @act = Act.new
+    #media attached to act
+    if @bot.posts.length < 1
+      @post = Post.new
+    else
+      @post = @bot.posts.take
+    end
+    
+    @photo = Post.new
+    @link = Post.new
+    @video = Post.new
+    @time = Schedule.new
+    @event = Event.new
     @bot_intents = @bot.lessons.where(user_proactive: false)
     @user_intents = @bot.lessons.where(user_proactive: true)
   end

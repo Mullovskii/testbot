@@ -31,7 +31,8 @@ def process_input(user_input)
     puts "\n#{(v * 100)} => #{k}\n"                      #display of classified log probabilities for each category
   end
   #result.max_class
-  #self.update_attribute(:bot_response, result.max_class.to_s)   
+  #self.update_attribute(:bot_response, result.max_class.to_s) 
+  self.update_attribute(:intent, result.max_class)
   self.update_attribute(:bot_response, Act.where(intent: result.max_class.to_s).sample.bot_say)       
   
 end

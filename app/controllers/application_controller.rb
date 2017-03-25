@@ -5,9 +5,9 @@ class ApplicationController < ActionController::Base
   def new_bot_action
     if current_user.present?
       @bot_action = BotAction.new
-      @bot_chat = current_user.bot_actions.last(2)
-      	if @bot_chat.length < 1
-			   @bot_chat << BotAction.greeting(current_user.id)
+      @latest_bot_actions = current_user.bot_actions.last(5)
+      	if @latest_bot_actions.length < 1
+			   @latest_bot_actions << BotAction.greeting(current_user.id)
 			   #current_user.bot_actions.create(bot_response: "Привет! Меня зовут Хлои. Показать тебе интересные события рядом?", created_at: Time.now)
 		    end
     end

@@ -3,6 +3,7 @@ class CreateEvents < ActiveRecord::Migration[5.0]
     create_table :events do |t|
       t.references :bot, foreign_key: true
       t.references :lesson, foreign_key: true
+      t.string :intent
       t.string :name
       t.string :place
       t.text :description

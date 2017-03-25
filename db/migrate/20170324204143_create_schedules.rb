@@ -3,6 +3,7 @@ class CreateSchedules < ActiveRecord::Migration[5.0]
     create_table :schedules do |t|
       t.references :bot, foreign_key: true
       t.references :lesson, foreign_key: true
+      t.string :intent
       t.time :time
       t.boolean :repeat
       t.boolean :repeat_daily

@@ -35,4 +35,4 @@
         = yield
       .col-xs-0
         - if current_user.present?
-          = render 'layouts/chat_bot', bot_action: @bot_action, bot_chat: @bot_chat
+          = render 'layouts/chat_bot', bot_action: @bot_action, latest_bot_actions: @latest_bot_actions

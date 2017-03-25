@@ -1,7 +1,20 @@
 .chat-body.clearfix
-  .header
-    %small.text-muted
-      %span.glyphicon.glyphicon-time
-      #{time_ago_in_words(bot_action.updated_at)} ago
-    %strong.pull-right.primary-font Bot
-  %p= return_bot_response
+	.header
+		%small.text-muted
+			%span.glyphicon.glyphicon-time
+			#{time_ago_in_words(bot_action.updated_at)} ago
+		%strong.pull-right.primary-font Bot
+	%p= return_bot_response
+	
+	- if Post.where(intent: bot_action.intent, bot_id: bot_action.bot_id).take
+		Прикрепленная новость:
+		= Post.where(intent: bot_action.intent, bot_id: bot_action.bot_id).take.title
+		= Post.where(intent: bot_action.intent, bot_id: bot_action.bot_id).take.body
+		= link_to "Ссылка", Post.where(intent: bot_action.intent, bot_id: bot_action.bot_id).take.link
+		.image
+			= image_tag(Post.where(intent: bot_action.intent, bot_id: bot_action.bot_id).take.photo, class: "image")
+	- elsif 
+		/ youtube link
+		/ event
+			
+		
