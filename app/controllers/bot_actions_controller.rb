@@ -18,6 +18,17 @@ class BotActionsController < ApplicationController
   #   end
   # end
 
+  def new
+    @bot_action = BotAction.new
+    
+  end
+  def create
+
+    @bot_action = current_user.bot_actions.create(bot_action_params)
+    redirect_to :back
+    
+  end
+
   def process_user_input
     @bot_action = current_user.bot_actions.build(bot_action_params)
     if @bot_action.save
@@ -33,6 +44,6 @@ class BotActionsController < ApplicationController
   private
  
   def bot_action_params
-    params.require(:bot_action).permit(:user_input, :user_id, :bot_id, :intent)
+    params.require(:bot_action).permit(:user_input, :user_id, :bot_id, :intent, :bot_response)
   end
 end

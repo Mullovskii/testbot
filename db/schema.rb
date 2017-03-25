@@ -96,7 +96,7 @@ ActiveRecord::Schema.define(version: 20170324205158) do
     t.integer  "bot_id"
     t.integer  "lesson_id"
     t.string   "intent"
-    t.time     "time"
+    t.integer  "time"
     t.boolean  "repeat"
     t.boolean  "repeat_daily"
     t.integer  "remind_over"

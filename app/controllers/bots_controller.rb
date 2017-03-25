@@ -26,7 +26,7 @@ class BotsController < ApplicationController
     @photo = Post.new
     @link = Post.new
     @video = Post.new
-    @time = Schedule.new
+    @schedule = Schedule.new
     @event = Event.new
     @bot_intents = @bot.lessons.where(user_proactive: false)
     @user_intents = @bot.lessons.where(user_proactive: true)

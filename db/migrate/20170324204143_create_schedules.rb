@@ -4,7 +4,7 @@ class CreateSchedules < ActiveRecord::Migration[5.0]
       t.references :bot, foreign_key: true
       t.references :lesson, foreign_key: true
       t.string :intent
-      t.time :time
+      t.integer :time
       t.boolean :repeat
       t.boolean :repeat_daily
       t.integer :remind_over

@@ -12,8 +12,6 @@
 
 
 
-
-
 %p
   %h3
     %b Intents:
@@ -155,8 +153,8 @@
             = f.submit '+'
 
         %h5 Прикрепить к ответу:
-        .col-md-2
-          %h6 Post
+        .row
+          %h6 Новость
           - if lesson.posts.where(proactive: true).length < 1 
             = form_for @post do |f|
               .field  
@@ -191,6 +189,85 @@
               .actions
                 = f.submit 'Save'
                 =link_to "X", post_path(lesson.posts.take), method: :delete
+        .row
+          %h6 Время
+          - if lesson.schedules.length < 1
+            = form_for @schedule do |f|
+              .field
+                = f.hidden_field :bot_id, value: @bot.id
+                = f.hidden_field :lesson_id, value: lesson.id
+                = f.label "отправить в"
+                = f.select :time, (0..23)
+                %p : 00
+                = f.label "повтор"
+                = f.check_box :repeat
+                = f.label "ежедневно"
+                = f.check_box :repeat_daily
+                = f.label "отправить через"
+                = f.number_field :remind_over
+                %p дней после скачивания бота 
+              .field
+                = f.label :sunday
+                = f.check_box :sunday
+              .field
+                = f.label :monday
+                = f.check_box :monday
+              .field
+                = f.label :tuesday
+                = f.check_box :tuesday
+              .field
+                = f.label :wednesday
+                = f.check_box :wednesday
+              .field
+                = f.label :thursday
+                = f.check_box :thursday
+              .field
+                = f.label :friday
+                = f.check_box :friday
+              .field
+                = f.label :saturday
+                = f.check_box :saturday
+              .actions
+                = f.submit 'Save'
+          - else 
+            = form_for lesson.schedules.take do |f|
+              .field
+                = f.hidden_field :bot_id, value: @bot.id
+                = f.hidden_field :lesson_id, value: lesson.id
+                = f.label "отправить в"
+                = f.select :time, (0..23)
+                %p : 00
+                = f.label "повтор"
+                = f.check_box :repeat
+                = f.label "ежедневно"
+                = f.check_box :repeat_daily
+                = f.label "отправить через"
+                = f.number_field :remind_over
+                %p дней после скачивания бота 
+              .field
+                = f.label :sunday
+                = f.check_box :sunday
+              .field
+                = f.label :monday
+                = f.check_box :monday
+              .field
+                = f.label :tuesday
+                = f.check_box :tuesday
+              .field
+                = f.label :wednesday
+                = f.check_box :wednesday
+              .field
+                = f.label :thursday
+                = f.check_box :thursday
+              .field
+                = f.label :friday
+                = f.check_box :friday
+              .field
+                = f.label :saturday
+                = f.check_box :saturday
+              .actions
+                = f.submit 'Save'
+            = link_to "Delete", schedule_path(lesson.schedules.take), method: :delete
 
 
 
