@@ -17,7 +17,7 @@
 #   runner "Schedule.run"
 # end
 
-every 1.minute do
-  runner "Schedule.run"
-end
+# every 1.minute do
+#   runner "Schedule.run"
+# end
 # Learn more: http://github.com/javan/whenever

@@ -3,6 +3,7 @@ class Schedule < ApplicationRecord
   belongs_to :lesson
 
   def self.run
+  	BotAction.create!(bot_response: "test")
   	# Act.last.update_attributes(bot_say: "1")
   # 	Schedule.all.where(time: Time.now.hour).each do |s|
   # 		if s.lesson.acts.where(proactive: true).length >= 1
