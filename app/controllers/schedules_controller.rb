@@ -69,6 +69,6 @@ class SchedulesController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def schedule_params
-      params.require(:schedule).permit(:bot_id, :lesson_id, :time, :repeat, :repeat_daily, :remind_over, :sunday, :monday, :tuesday, :wednesday, :thursday, :friday, :saturday)
+      params.require(:schedule).permit(:bot_id, :intent, :lesson_id, :time, :repeat, :repeat_daily, :remind_over, :sunday, :monday, :tuesday, :wednesday, :thursday, :friday, :saturday)
     end
 end

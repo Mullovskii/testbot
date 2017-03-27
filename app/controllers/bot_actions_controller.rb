@@ -20,13 +20,11 @@ class BotActionsController < ApplicationController
 
   def new
     @bot_action = BotAction.new
-    
   end
+  
   def create
-
     @bot_action = current_user.bot_actions.create(bot_action_params)
     redirect_to :back
-    
   end
 
   def process_user_input

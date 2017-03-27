@@ -12,6 +12,7 @@
 
 
 
+
 %p
   %h3
     %b Intents:
@@ -42,6 +43,7 @@
         %ul
           - lesson.user_says.each do |user_say|
             %li= user_say.input
+            
             = link_to 'Destroy', user_say,  method: :delete, data: { confirm: 'Are you sure?' } 
         
         = form_for @user_say do |f|
@@ -196,6 +198,7 @@
               .field
                 = f.hidden_field :bot_id, value: @bot.id
                 = f.hidden_field :lesson_id, value: lesson.id
+                = f.hidden_field :intent, value: lesson.intent
                 = f.label "отправить в"
                 = f.select :time, (0..23)
                 %p : 00

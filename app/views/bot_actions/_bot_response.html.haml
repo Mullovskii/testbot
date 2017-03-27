@@ -5,8 +5,7 @@
 			#{time_ago_in_words(bot_action.updated_at)} ago
 		%strong.pull-right.primary-font Bot
 	%p= return_bot_response
-	
-	- if Post.where(intent: bot_action.intent, bot_id: bot_action.bot_id).take
+	- if Post.where(intent: bot_action.intent, bot_id: bot_action.bot_id).length >= 1
 		Прикрепленная новость:
 		= Post.where(intent: bot_action.intent, bot_id: bot_action.bot_id).take.title
 		= Post.where(intent: bot_action.intent, bot_id: bot_action.bot_id).take.body

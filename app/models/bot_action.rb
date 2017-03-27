@@ -5,7 +5,7 @@ class BotAction < ApplicationRecord
   belongs_to :bot
   validates_presence_of :user_input, message: "ты хотел что-то сказать"
   validates_length_of :user_input, minimum: 2, maximum: 200, message: "accepts only 2 - 200" 
-  before_save :strip_user_input
+  # before_save :strip_user_input
 
 #TRAINING_DATA = YAML.load_file('config/chatbot/training.yml') 
 #EVENTS_ARRAY = {"events" => ["да", "ок", "давай", "события", "событие", "ивенты", "ивент", "интересное", "семинары", "семинар", "концерты", "концерт", "уроки", "урок", "лекции", "фильмы", "куда"]}
@@ -112,11 +112,12 @@ def error_response
      Давай потолкуем.. давай потолкуем.. Короче не поняла я.."].sample
   end
  
-def strip_user_input
-    self.user_input = self.user_input.squish
-end
+# def strip_user_input
+#     self.user_input = self.user_input.squish
+# end
 
 def clean_user_input(user_input)
+    self.user_input = self.user_input.squish
     # rm_spl_chars = user_input.downcase.gsub(/[^a-zA-Z0-9-#\s]/, '')
     # rm_spl_chars.split(/\s+/)
     rm_spl_chars = user_input.downcase.split(/[^[:word:]]+/)

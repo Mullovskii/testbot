@@ -19,6 +19,7 @@ gem 'nbayes'
 gem 'haml-rails'
 gem 'resque'
 gem 'resque-scheduler'
+gem 'resque-web', require: 'resque_web'
 # gem 'whenever', :require => false
 
 
