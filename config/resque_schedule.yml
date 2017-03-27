@@ -1,0 +1,6 @@
+run_job:
+  every:
+    - "30s"
+  class: "RunJob"
+  queue: run_job
+  description: "Run Bot Actions"

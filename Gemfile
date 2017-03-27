@@ -17,7 +17,10 @@ gem 'devise'
 gem 'bootstrap-sass'
 gem 'nbayes'
 gem 'haml-rails'
-gem 'whenever', :require => false
+gem 'resque'
+gem 'resque-scheduler'
+# gem 'whenever', :require => false
+
 
 # See https://github.com/rails/execjs#readme for more supported runtimes
 # gem 'therubyracer', platforms: :ruby

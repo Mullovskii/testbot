@@ -1,3 +1,4 @@
+# require 'resque/server'
 Rails.application.routes.draw do
   resources :events
   resources :schedules
@@ -7,6 +8,8 @@ Rails.application.routes.draw do
   resources :lessons
   resources :bots
   post 'bot_actions/process_user_input'
+  
+  # mount Resque::Server.new, at: "/resque"
 
   
   devise_for :users
