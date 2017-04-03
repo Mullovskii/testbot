@@ -1,0 +1,15 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  name: MyString
+  key: MyString
+  user: one
+  bot: one
+  intent: MyString
+
+two:
+  name: MyString
+  key: MyString
+  user: two
+  bot: two
+  intent: MyString

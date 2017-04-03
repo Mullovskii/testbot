@@ -35,7 +35,7 @@ class BotsController < ApplicationController
          @latest_bot_actions << BotAction.greeting(current_user.id)
          #current_user.bot_actions.create(bot_response: "Привет! Меня зовут Хлои. Показать тебе интересные события рядом?", created_at: Time.now)
         end
-    
+    # render json: @bot, include: [:lessons, :acts], test: @user_intents, status: :ok
   end
 
   # GET /bots/new

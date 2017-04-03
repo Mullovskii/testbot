@@ -28,6 +28,13 @@ class UserSaysController < ApplicationController
 
     respond_to do |format|
       if @user_say.save
+        if @user_say.extract_data == true
+          Lesson.where(intent: @user_say.intent, bot_id: @user_say.bot_id).take.update(extract_data: true)
+          #создаем регулярку с capture groups и сохраняем их в отдельное поле
+          # @user_say.update(regexp: @user_say.make_regexp(@user_say.input))
+          # @user_say.update(regexp: Regexp.new(Regexp.escape(@user_say.make_regexp(@user_say.input)), "i").to_s)
+          @user_say.update(regexp: @user_say.make_regexp(Regexp.new(Regexp.escape(@user_say.input), "i").to_s))          
+        end
         format.html { redirect_to @user_say.bot, notice: 'User say was successfully created.' }
         format.json { render :show, status: :created, location: @user_say }
       else
@@ -69,6 +76,6 @@ class UserSaysController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def user_say_params
-      params.require(:user_say).permit(:input, :lesson_id, :user_id, :bot_id, :intent)
+      params.require(:user_say).permit(:input, :lesson_id, :user_id, :bot_id, :intent, :extract_data, :regexp)
     end
 end

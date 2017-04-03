@@ -32,9 +32,38 @@ def process_input(user_input)
   end
   #result.max_class
   #self.update_attribute(:bot_response, result.max_class.to_s) 
-  self.update_attribute(:intent, result.max_class)
-  self.update_attribute(:bot_response, Act.where(intent: result.max_class.to_s).sample.bot_say)       
-  
+  self.update_attribute(:intent, result.max_class)  
+  self.update_attribute(:bot_response, Act.where(bot_id: self.bot_id, intent: result.max_class.to_s).sample.bot_say) 
+
+  if Lesson.where(bot_id: self.bot_id, intent: self.intent, extract_data: true).length >= 1
+    create_entity
+  end
+  if self.bot_response.match(/@[\wа-я]+/i)
+    self.update(bot_response: change_entity(Act.where(bot_id: self.bot_id, intent: self.intent).sample.bot_say))
+  end   
+end
+
+def change_entity(bot_response)
+  # self.bot_response.gsub(/@[\wа-я]+/i).with_index { |m, i| Entity.where(bot_id: self.bot_id, intent: self.intent, key: m[/[^@]+/]  ).take.name   }
+  if Entity.where(bot_id: self.bot_id, intent: self.intent, user_id: self.user_id).take
+    self.bot_response.gsub(/@[\wа-я]+/i).with_index { |m, i| Entity.where(bot_id: self.bot_id, intent: self.intent, key: m[/[^@]+/], user_id: self.user_id).last.name   }
+    # self.bot_response.gsub(/@[\wа-я]+/i).with_index { |m, i| p m}
+  end
+end
+
+#save @entity like @user_name from user_say
+def create_entity
+  a = self.bot.user_says.where(intent: self.intent)
+  a.each do |user_say|
+    if self.user_input.match(user_say.regexp)
+      names = self.user_input.match(user_say.regexp).names
+      captures = self.user_input.match(user_say.regexp).captures
+      h = Hash[names.zip captures]
+      h.each do |key, entity|
+        Entity.create(key: key, name: entity, user_id: self.user_id, bot_id: self.bot_id, intent: self.intent)
+      end
+    end
+  end 
 end
 
 def classification_failed_enquiry(*args)

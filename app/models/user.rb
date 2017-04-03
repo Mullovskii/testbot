@@ -8,4 +8,5 @@ class User < ApplicationRecord
     has_many :lessons
     has_many :user_says
     has_many :acts
+    has_many :entities
 end

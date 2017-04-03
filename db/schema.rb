@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170324205158) do
+ActiveRecord::Schema.define(version: 20170402103932) do
 
   create_table "acts", force: :cascade do |t|
     t.string   "bot_say"
@@ -46,6 +46,18 @@ ActiveRecord::Schema.define(version: 20170324205158) do
     t.index ["user_id"], name: "index_bots_on_user_id"
   end
 
+  create_table "entities", force: :cascade do |t|
+    t.string   "name"
+    t.string   "key"
+    t.integer  "user_id"
+    t.integer  "bot_id"
+    t.string   "intent"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["bot_id"], name: "index_entities_on_bot_id"
+    t.index ["user_id"], name: "index_entities_on_user_id"
+  end
+
   create_table "events", force: :cascade do |t|
     t.integer  "bot_id"
     t.integer  "lesson_id"
@@ -70,8 +82,9 @@ ActiveRecord::Schema.define(version: 20170324205158) do
     t.boolean  "user_proactive", default: true
     t.integer  "bot_id"
     t.integer  "user_id"
-    t.datetime "created_at",                    null: false
-    t.datetime "updated_at",                    null: false
+    t.boolean  "extract_data",   default: false
+    t.datetime "created_at",                     null: false
+    t.datetime "updated_at",                     null: false
     t.index ["bot_id"], name: "index_lessons_on_bot_id"
     t.index ["user_id"], name: "index_lessons_on_user_id"
   end
@@ -115,12 +128,14 @@ ActiveRecord::Schema.define(version: 20170324205158) do
 
   create_table "user_says", force: :cascade do |t|
     t.string   "input"
+    t.string   "regexp"
     t.string   "intent"
     t.integer  "lesson_id"
     t.integer  "user_id"
     t.integer  "bot_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.boolean  "extract_data", default: false
+    t.datetime "created_at",                   null: false
+    t.datetime "updated_at",                   null: false
     t.index ["bot_id"], name: "index_user_says_on_bot_id"
     t.index ["lesson_id"], name: "index_user_says_on_lesson_id"
     t.index ["user_id"], name: "index_user_says_on_user_id"

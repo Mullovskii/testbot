@@ -11,6 +11,11 @@
   = @bot.name
 
 
+  
+
+
+
+
 
 
 %p
@@ -44,6 +49,7 @@
           - lesson.user_says.each do |user_say|
             %li= user_say.input
             
+
             = link_to 'Destroy', user_say,  method: :delete, data: { confirm: 'Are you sure?' } 
         
         = form_for @user_say do |f|
@@ -280,13 +286,17 @@
         %ul
           - lesson.user_says.each do |user_say|
             %li= user_say.input
-            / %li= user_say.intent
+            %li= user_say.regexp
             = link_to 'Destroy',  user_say,  method: :delete, data: { confirm: 'Are you sure?' } 
         
         = form_for @user_say do |f|
           .field
             = f.label "Пользователь отвечает"
+            Если вы хотите сохранить данные пользователя, то в тренировочных ответах пользователя укажите @переменную и поставьте галочку "сохранить данные от пользователя". Н-р: "Меня зовут @имя", "Я @имя". Бот будет понимать, что вместо переменной @имя будет имя пользователя, которое нужно сохранить. После вы можете использовать переменную @имя в ответах бота.
+
             = f.text_field :input
+            = f.label "Сохранить данные от пользователя"
+            = f.check_box :extract_data
             = f.hidden_field :intent, value: lesson.intent
             = f.hidden_field :bot_id, value: @bot.id
             = f.hidden_field :lesson_id, value: lesson.id
