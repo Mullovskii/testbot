@@ -55,12 +55,14 @@ end
 def create_entity
   a = self.bot.user_says.where(intent: self.intent)
   a.each do |user_say|
-    if self.user_input.match(user_say.regexp)
-      names = self.user_input.match(user_say.regexp).names
-      captures = self.user_input.match(user_say.regexp).captures
-      h = Hash[names.zip captures]
-      h.each do |key, entity|
-        Entity.create(key: key, name: entity, user_id: self.user_id, bot_id: self.bot_id, intent: self.intent)
+    unless user_say.regexp == nil
+      if self.user_input.match(user_say.regexp)
+        names = self.user_input.match(user_say.regexp).names
+        captures = self.user_input.match(user_say.regexp).captures
+        h = Hash[names.zip captures]
+        h.each do |key, entity|
+          Entity.create(key: key, name: entity, user_id: self.user_id, bot_id: self.bot_id, intent: self.intent)
+        end
       end
     end
   end 
