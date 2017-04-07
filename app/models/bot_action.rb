@@ -39,16 +39,17 @@ def process_input(user_input)
     create_entity
   end
   if self.bot_response.match(/@[\wа-я]+/i)
-    self.update(bot_response: change_entity(Act.where(bot_id: self.bot_id, intent: self.intent).sample.bot_say))
+    # self.update(bot_response: change_entity(Act.where(bot_id: self.bot_id, intent: self.intent).sample.bot_say))
+    self.update(bot_response: change_entity(self.bot_response))
   end   
 end
 
 def change_entity(bot_response)
   # self.bot_response.gsub(/@[\wа-я]+/i).with_index { |m, i| Entity.where(bot_id: self.bot_id, intent: self.intent, key: m[/[^@]+/]  ).take.name   }
-  if Entity.where(bot_id: self.bot_id, intent: self.intent, user_id: self.user_id).take
-    self.bot_response.gsub(/@[\wа-я]+/i).with_index { |m, i| Entity.where(bot_id: self.bot_id, intent: self.intent, key: m[/[^@]+/], user_id: self.user_id).last.name   }
+  # if Entity.where(bot_id: self.bot_id, intent: self.intent, user_id: self.user_id).take
+    self.bot_response.gsub(/@[\wа-я]+/i).with_index { |m, i| Entity.where(bot_id: self.bot_id, key: m[/[^@]+/], user_id: self.user_id).last.name   }
     # self.bot_response.gsub(/@[\wа-я]+/i).with_index { |m, i| p m}
-  end
+  # end
 end
 
 #save @entity like @user_name from user_say
