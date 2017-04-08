@@ -31,9 +31,17 @@ class UserSaysController < ApplicationController
         if @user_say.extract_data == true
           Lesson.where(intent: @user_say.intent, bot_id: @user_say.bot_id).take.update(extract_data: true)
           #создаем регулярку с capture groups и сохраняем их в отдельное поле
-          # @user_say.update(regexp: @user_say.make_regexp(@user_say.input))
-          # @user_say.update(regexp: Regexp.new(Regexp.escape(@user_say.make_regexp(@user_say.input)), "i").to_s)
-          @user_say.update(regexp: @user_say.make_regexp(Regexp.new(Regexp.escape(@user_say.input), "i").to_s))          
+          @user_say.update(regexp: @user_say.make_regexp(Regexp.new(Regexp.escape(@user_say.input), "i").to_s)) 
+          # создаем ключ-переменную для привязки примеров переменной
+          if @user_say.input.match(/@[\wа-я]+/i)
+            @user_say.input.to_enum(:scan, /(@[\wа-я]+)/i).map { Regexp.last_match }.each do |a|
+              i = 0
+              unless Key.where(bot_id: @user_say.bot_id, name: a[i]).take
+                Key.create(name: a[i], bot_id: @user_say.bot_id, user_say_id: @user_say.id, lesson_id: @user_say.lesson_id)
+              end
+              i = i + 1 
+            end
+          end       
         end
         format.html { redirect_to @user_say.bot, notice: 'User say was successfully created.' }
         format.json { render :show, status: :created, location: @user_say }

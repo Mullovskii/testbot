@@ -28,6 +28,8 @@ class BotsController < ApplicationController
     @video = Post.new
     @schedule = Schedule.new
     @event = Event.new
+
+    @sample = Sample.new
     @bot_intents = @bot.lessons.where(user_proactive: false)
     @user_intents = @bot.lessons.where(user_proactive: true)
     @latest_bot_actions = @bot.bot_actions.last(5)

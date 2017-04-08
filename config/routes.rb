@@ -3,6 +3,8 @@ require 'api_constraints'
 
 Rails.application.routes.draw do
 
+  resources :keys
+  resources :samples
   namespace :api, defaults: {format: 'json'} do
     scope module: :v1, constraints: ApiConstraints.new(version: 1, default: true) do
       post 'bot_actions/process_user_input'

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170402103932) do
+ActiveRecord::Schema.define(version: 20170408110251) do
 
   create_table "acts", force: :cascade do |t|
     t.string   "bot_say"
@@ -77,6 +77,18 @@ ActiveRecord::Schema.define(version: 20170402103932) do
     t.index ["lesson_id"], name: "index_events_on_lesson_id"
   end
 
+  create_table "keys", force: :cascade do |t|
+    t.integer  "user_say_id"
+    t.integer  "bot_id"
+    t.integer  "lesson_id"
+    t.string   "name"
+    t.datetime "created_at",  null: false
+    t.datetime "updated_at",  null: false
+    t.index ["bot_id"], name: "index_keys_on_bot_id"
+    t.index ["lesson_id"], name: "index_keys_on_lesson_id"
+    t.index ["user_say_id"], name: "index_keys_on_user_say_id"
+  end
+
   create_table "lessons", force: :cascade do |t|
     t.string   "intent"
     t.boolean  "user_proactive", default: true
@@ -103,6 +115,18 @@ ActiveRecord::Schema.define(version: 20170402103932) do
     t.datetime "updated_at",                 null: false
     t.index ["bot_id"], name: "index_posts_on_bot_id"
     t.index ["lesson_id"], name: "index_posts_on_lesson_id"
+  end
+
+  create_table "samples", force: :cascade do |t|
+    t.integer  "user_say_id"
+    t.integer  "bot_id"
+    t.integer  "key_id"
+    t.string   "name"
+    t.datetime "created_at",  null: false
+    t.datetime "updated_at",  null: false
+    t.index ["bot_id"], name: "index_samples_on_bot_id"
+    t.index ["key_id"], name: "index_samples_on_key_id"
+    t.index ["user_say_id"], name: "index_samples_on_user_say_id"
   end
 
   create_table "schedules", force: :cascade do |t|

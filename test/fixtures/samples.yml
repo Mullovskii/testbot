@@ -1,0 +1,13 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  user_say: one
+  bot: one
+  name: MyString
+  key: MyString
+
+two:
+  user_say: two
+  bot: two
+  name: MyString
+  key: MyString

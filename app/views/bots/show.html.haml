@@ -9,7 +9,7 @@
 %h1
   %b Bot:
   = @bot.name
-  / =BotAction.last.bot_response
+  / = Entity.last.inspect
 
 
   
@@ -287,7 +287,7 @@
         %ul
           - lesson.user_says.each do |user_say|
             %li= user_say.input
-            %li= user_say.regexp
+            / %li= user_say.regexp
             = link_to 'Destroy',  user_say,  method: :delete, data: { confirm: 'Are you sure?' } 
         
         = form_for @user_say do |f|
@@ -302,6 +302,21 @@
             = f.hidden_field :bot_id, value: @bot.id
             = f.hidden_field :lesson_id, value: lesson.id
             = f.submit '+'
+        - if lesson.keys.length >= 1
+          - lesson.keys.each do |key|
+            = key.name + ":"
+            - key.samples.each do |sample|
+              = sample.name
+            = form_for @sample do |f|
+              .field
+                = f.label "Многочисленные примеры #{key.name}"
+                = f.hidden_field :user_say_id, value: key.user_say_id
+                = f.hidden_field :key_id, value: key.id
+                = f.hidden_field :bot_id, value: key.bot_id
+                = f.text_field :name
+                = f.submit '+'
+      
+
 
       .col-md-6
         

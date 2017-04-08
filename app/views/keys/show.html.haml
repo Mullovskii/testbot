@@ -1,0 +1,15 @@
+%p#notice= notice
+
+%p
+  %b User say:
+  = @key.user_say
+%p
+  %b Bot:
+  = @key.bot_id
+%p
+  %b Name:
+  = @key.name
+
+= link_to 'Edit', edit_key_path(@key)
+\|
+= link_to 'Back', keys_path

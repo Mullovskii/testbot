@@ -6,4 +6,6 @@ class Lesson < ApplicationRecord
   has_many :posts
   has_many :schedules
   has_many :events
+
+  has_many :keys
 end

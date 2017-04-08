@@ -1,0 +1,25 @@
+%h1 Listing keys
+
+%table
+  %thead
+    %tr
+      %th User say
+      %th Bot
+      %th Name
+      %th
+      %th
+      %th
+
+  %tbody
+    - @keys.each do |key|
+      %tr
+        %td= key.user_say
+        %td= key.bot_id
+        %td= key.name
+        %td= link_to 'Show', key
+        %td= link_to 'Edit', edit_key_path(key)
+        %td= link_to 'Destroy', key, :method => :delete, :data => { :confirm => 'Are you sure?' }
+
+%br
+
+= link_to 'New Key', new_key_path
