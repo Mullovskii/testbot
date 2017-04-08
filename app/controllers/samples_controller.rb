@@ -69,6 +69,6 @@ class SamplesController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def sample_params
-      params.require(:sample).permit(:name, :bot_id, :user_say_id, :key_id)
+      params.require(:sample).permit(:name, :bot_id, :user_say_id, :key_id, :key_name)
     end
 end

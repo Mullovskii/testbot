@@ -17,13 +17,33 @@ def process_input(user_input)
   # common_array = user_input_tokens & EVENTS_ARRAY["events"]  #Intersection of both arrays
   # common_word = common_array.present? ? EVENTS_ARRAY.keys[0] : "classification_failed"
   # send("#{common_word}_enquiry", user_input_tokens)
+
 #####
   nbayes = NBayes::Base.new(binarized: true)
+
+
+  # self.bot.user_says.each do |say|
+  #   input = say.input
+  #   category = say.intent
+  #   nbayes.train(input.split(/\s+/), category)
+  # end
+  
+
+  # если user_say содержит переменные типа @переменная, то поочередно подставляем вместо @переменной Sample-пример переменной, привязанный к @переменной во время тренировки 
   self.bot.user_says.each do |say|
-    input = say.input
     category = say.intent
-    nbayes.train(input.split(/\s+/), category)
+    say.samples.each do |sample|
+      input = say.input.gsub(/@[\wа-я]+/i).with_index do |m, i| 
+        if sample.key_name == m 
+          sample.name
+        end
+      end
+      nbayes.train(input.split(/\s+/), category)
+      p input
+    end        
   end
+
+
   nbayes.assume_uniform = true                           #
   result = nbayes.classify(user_input_tokens)            #classifying the input form user 
   #nbayes.dump('config/rembot/dump.yml')                 #dump of trained data, for us to observe how the classification is done
@@ -33,7 +53,11 @@ def process_input(user_input)
   #result.max_class
   #self.update_attribute(:bot_response, result.max_class.to_s) 
   self.update_attribute(:intent, result.max_class)  
-  self.update_attribute(:bot_response, Act.where(bot_id: self.bot_id, intent: result.max_class.to_s).sample.bot_say) 
+  if Act.where(bot_id: self.bot_id, intent: result.max_class.to_s).length >=1
+    self.update_attribute(:bot_response, Act.where(bot_id: self.bot_id, intent: result.max_class.to_s).sample.bot_say) 
+  else
+    self.update_attribute(:bot_response, "Похоже бот не знает что ответить") 
+  end
 
   if Lesson.where(bot_id: self.bot_id, intent: self.intent, extract_data: true).length >= 1
     create_entity

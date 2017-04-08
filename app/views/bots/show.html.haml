@@ -9,7 +9,13 @@
 %h1
   %b Bot:
   = @bot.name
-  / = Entity.last.inspect
+  / - if UserSay.last.input.match(/@[\wа-я]+/i)
+  /   - u = UserSay.last
+  /   - u.samples.each do |s|
+  /     = u.input.gsub(/@[\wа-я]+/i).with_index do |m, i| 
+  /       - if s.key_name == m
+  /         - s.name
+
 
 
   
@@ -312,6 +318,7 @@
                 = f.label "Многочисленные примеры #{key.name}"
                 = f.hidden_field :user_say_id, value: key.user_say_id
                 = f.hidden_field :key_id, value: key.id
+                = f.hidden_field :key_name, value: key.name
                 = f.hidden_field :bot_id, value: key.bot_id
                 = f.text_field :name
                 = f.submit '+'

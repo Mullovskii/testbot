@@ -5,6 +5,7 @@ class CreateSamples < ActiveRecord::Migration[5.0]
       t.references :bot, foreign_key: true
       t.references :key, foreign_key: true
       t.string :name
+      t.string :key_name
       t.timestamps
     end
   end

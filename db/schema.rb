@@ -122,6 +122,7 @@ ActiveRecord::Schema.define(version: 20170408110251) do
     t.integer  "bot_id"
     t.integer  "key_id"
     t.string   "name"
+    t.string   "key_name"
     t.datetime "created_at",  null: false
     t.datetime "updated_at",  null: false
     t.index ["bot_id"], name: "index_samples_on_bot_id"
