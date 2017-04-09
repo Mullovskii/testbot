@@ -32,16 +32,23 @@ def process_input(user_input)
   # если user_say содержит переменные типа @переменная, то поочередно подставляем вместо @переменной Sample-пример переменной, привязанный к @переменной во время тренировки 
   self.bot.user_says.each do |say|
     category = say.intent
-    say.samples.each do |sample|
-      input = say.input.gsub(/@[\wа-я]+/i).with_index do |m, i| 
-        if sample.key_name == m 
-          sample.name
+    if say.samples.length >= 1
+      say.samples.each do |sample|
+        input = say.input.gsub(/@[\wа-я]+/i).with_index do |m, i| 
+          if sample.key_name == m 
+            sample.name
+          end
         end
-      end
+        nbayes.train(input.split(/\s+/), category)
+        # p x
+        # p input
+      end 
+    else
+      input = say.input
       nbayes.train(input.split(/\s+/), category)
-      p input
-    end        
+    end       
   end
+
 
 
   nbayes.assume_uniform = true                           #
@@ -71,7 +78,7 @@ end
 def change_entity(bot_response)
   # self.bot_response.gsub(/@[\wа-я]+/i).with_index { |m, i| Entity.where(bot_id: self.bot_id, intent: self.intent, key: m[/[^@]+/]  ).take.name   }
   # if Entity.where(bot_id: self.bot_id, intent: self.intent, user_id: self.user_id).take
-    self.bot_response.gsub(/@[\wа-я]+/i).with_index { |m, i| Entity.where(bot_id: self.bot_id, key: m[/[^@]+/], user_id: self.user_id).last.name   }
+    self.bot_response.gsub(/@[\wа-я]+/i).with_index { |m, i| Entity.where(bot_id: self.bot_id, key: m[/[^@]+/], user_id: self.user_id).last.name if Entity.where(bot_id: self.bot_id, key: m[/[^@]+/], user_id: self.user_id).take  }
     # self.bot_response.gsub(/@[\wа-я]+/i).with_index { |m, i| p m}
   # end
 end
