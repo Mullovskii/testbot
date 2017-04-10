@@ -1,0 +1,21 @@
+%p#notice= notice
+
+%p
+  %b Bot:
+  = @check.bot
+%p
+  %b Lesson:
+  = @check.lesson
+%p
+  %b Name:
+  = @check.name
+%p
+  %b Key:
+  = @check.key
+%p
+  %b Intent:
+  = @check.intent
+
+= link_to 'Edit', edit_check_path(@check)
+\|
+= link_to 'Back', checks_path

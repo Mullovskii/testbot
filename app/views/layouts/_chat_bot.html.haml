@@ -4,32 +4,51 @@
       .panel.panel-primary
         .panel-body
           %ul.chat
-            - latest_bot_actions.each do |bot_action|
-              .chat-body.clearfix
-                .header
-                  %strong.primary-font Me
-                  %small.pull-right.text-muted
-                    %span.glyphicon.glyphicon-time
-                    #{time_ago_in_words(bot_action.created_at)} ago
-                %p= bot_action.user_input
-              .chat-body.clearfix
-                .header
-                  %small.text-muted
-                    %span.glyphicon.glyphicon-time
-                    #{time_ago_in_words(bot_action.updated_at)} ago
-                  %strong.pull-right.primary-font Bot
-                %p= bot_action.bot_response
-                // this should be taken to som json partial
-                - if Post.where(intent: bot_action.intent, bot_id: bot_action.bot_id).take
-                  Прикрепленная новость:
-                  = Post.where(intent: bot_action.intent, bot_id: bot_action.bot_id).take.title
-                  = Post.where(intent: bot_action.intent, bot_id: bot_action.bot_id).take.body
-                  = link_to "Ссылка", Post.where(intent: bot_action.intent, bot_id: bot_action.bot_id).take.link
-                  .image
-                    = image_tag(Post.where(intent: bot_action.intent, bot_id: bot_action.bot_id).take.photo, class: "image")
-                - elsif 
-                  / youtube link
-                  / event
+            - if latest_bot_actions.length < 1 
+              / = link_to "Greet #{@bot.name + "Bot"}", bot_actions_greeting_path(:bot_id => @bot.id), method: :post
+              = form_for bot_action, url: bot_actions_greeting_path, remote: true do |f|
+                .input-group
+                  - if @bot
+                    = f.hidden_field :bot_id, value: @bot.id
+                    = f.hidden_field :user_input, value: "hey"
+                  %span.input-group-btn
+                    = f.submit "Greet #{@bot.name + "Bot"}", class: 'btn btn-sm', id: 'btn-chat'
+            -else
+              - latest_bot_actions.each do |bot_action|
+                .chat-body.clearfix
+                  .header
+                    %strong.primary-font Me
+                    %small.pull-right.text-muted
+                      %span.glyphicon.glyphicon-time
+                      #{time_ago_in_words(bot_action.created_at)} ago
+                  %p= bot_action.user_input
+                .chat-body.clearfix
+                  .header
+                    %small.text-muted
+                      %span.glyphicon.glyphicon-time
+                      #{time_ago_in_words(bot_action.updated_at)} ago
+                    %strong.pull-right.primary-font Bot
+                  %p= bot_action.bot_response
+                  // this should be taken to som json partial
+                  
+                  - if Post.where(intent: bot_action.intent, bot_id: bot_action.bot_id).take
+                    Прикрепленная новость:
+                    = Post.where(intent: bot_action.intent, bot_id: bot_action.bot_id).take.title
+                    = Post.where(intent: bot_action.intent, bot_id: bot_action.bot_id).take.body
+                    = link_to "Ссылка", Post.where(intent: bot_action.intent, bot_id: bot_action.bot_id).take.link
+                    .image
+                      = image_tag(Post.where(intent: bot_action.intent, bot_id: bot_action.bot_id).take.photo, class: "image")
+                 
+                  - elsif Check.where(intent: bot_action.intent, bot_id: bot_action.bot_id).take
+                    - Check.where(intent: bot_action.intent, bot_id: bot_action.bot_id).each do |check| 
+                      = form_for Entity.new, url: entities_create_check_entity_path, remote: true do |f|
+                        = f.hidden_field :bot_id, value: @bot.id
+                        = f.hidden_field :name, value: check.name
+                        = f.hidden_field :intent, value: check.intent
+                        = f.submit check.name, class: 'btn btn-sm', id: 'btn-chat'
+
+
+                 
       
     
                 

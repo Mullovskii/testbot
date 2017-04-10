@@ -9,6 +9,9 @@
 %h1
   %b Bot:
   = @bot.name
+  / =Entity.last.inspect
+  / = current_user.entities.destroy_all
+  / = BotAction.destroy_all
   / - if UserSay.last.input.match(/@[\wа-я]+/i)
   /   - u = UserSay.last
   /   - u.samples.each do |s|
@@ -89,8 +92,8 @@
         
         / attached media
         %h5 Прикрепить к ответу:
-        .col-md-2
-          %h6 Post
+        .col-md-12
+          %h6 Post:
           - if lesson.posts.length < 1 
             = form_for @post do |f|
               .field  
@@ -124,6 +127,22 @@
               .actions
                 = f.submit 'Save'
             =link_to "X", post_path(lesson.posts.take), method: :delete
+        .col-md-12
+
+          %h6 CheckBox:
+          - if lesson.checks.length >= 1
+            - lesson.checks.each do |check|
+              = check.name
+              =link_to "X", check_path(check), method: :delete
+          = form_for Check.new do |f|
+            .field  
+              = f.hidden_field :bot_id, value: @bot.id
+              = f.hidden_field :lesson_id, value: lesson.id
+              = f.hidden_field :intent, value: lesson.intent
+              = f.label :name
+              = f.text_field :name    
+            .actions
+              = f.submit '+'        
 
 
 

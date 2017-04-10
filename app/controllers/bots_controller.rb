@@ -33,10 +33,10 @@ class BotsController < ApplicationController
     @bot_intents = @bot.lessons.where(user_proactive: false)
     @user_intents = @bot.lessons.where(user_proactive: true)
     @latest_bot_actions = @bot.bot_actions.last(5)
-        if @latest_bot_actions.length < 1
-         @latest_bot_actions << BotAction.greeting(current_user.id)
-         #current_user.bot_actions.create(bot_response: "Привет! Меня зовут Хлои. Показать тебе интересные события рядом?", created_at: Time.now)
-        end
+        # if @latest_bot_actions.length < 1
+        #  @latest_bot_actions << BotAction.greeting(current_user.id)
+        #  #current_user.bot_actions.create(bot_response: "Привет! Меня зовут Хлои. Показать тебе интересные события рядом?", created_at: Time.now)
+        # end
     # render json: @bot, include: [:lessons, :acts], test: @user_intents, status: :ok
   end
 

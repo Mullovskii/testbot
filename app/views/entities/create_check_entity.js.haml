@@ -1,0 +1,2 @@
+$(".chat").append("Ok, you like: #{escape_javascript("#{@user_entities.each {|e| e} }").html_safe}");
+$(".panel-body").animate({ scrollTop: $(".panel-body")[0].scrollHeight}, 0);

@@ -105,9 +105,9 @@ def classification_failed_enquiry(*args)
     return false
 end
 
-def self.greeting(id)
-  BotAction.create(bot_response: "Привет! Меня зовут Хлои. Я умею находить интересные события рядом. Что из предложенного тебе может понравится?", user_id: id, created_at: Time.now, updated_at: Time.now, intent: "interests")
-end
+# def self.greeting(id)
+#   BotAction.create(bot_response: "Привет! Меня зовут Хлои. Я умею находить интересные события рядом. Что из предложенного тебе может понравится?", user_id: id, created_at: Time.now, updated_at: Time.now, intent: "interests")
+# end
 
 def hello
   self.update_attribute(:bot_response, "Интересные события на завтра:")

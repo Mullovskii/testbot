@@ -1,0 +1,29 @@
+%h1 Listing checks
+
+%table
+  %thead
+    %tr
+      %th Bot
+      %th Lesson
+      %th Name
+      %th Key
+      %th Intent
+      %th
+      %th
+      %th
+
+  %tbody
+    - @checks.each do |check|
+      %tr
+        %td= check.bot
+        %td= check.lesson
+        %td= check.name
+        %td= check.key
+        %td= check.intent
+        %td= link_to 'Show', check
+        %td= link_to 'Edit', edit_check_path(check)
+        %td= link_to 'Destroy', check, :method => :delete, :data => { :confirm => 'Are you sure?' }
+
+%br
+
+= link_to 'New Check', new_check_path

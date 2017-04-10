@@ -1,6 +1,15 @@
 class EntitiesController < ApplicationController
   # before_action :set_entity, only: [:show, :edit, :update, :destroy]
-
+  def create_check_entity
+  	@entity = current_user.entities.build(entity_params)
+    if @entity.save
+    	@user_entities = current_user.entities.map { |e| e.name }
+      @entity.update(key: "@#{@entity.name.downcase}")
+    end
+    respond_to do |format|
+      format.js
+    end
+  end
  
   private
 

@@ -12,6 +12,13 @@
 		= link_to "Ссылка", Post.where(intent: bot_action.intent, bot_id: bot_action.bot_id).take.link
 		.image
 			= image_tag(Post.where(intent: bot_action.intent, bot_id: bot_action.bot_id).take.photo, class: "image")
+	- elsif Check.where(intent: bot_action.intent, bot_id: bot_action.bot_id).take
+		- Check.where(intent: bot_action.intent, bot_id: bot_action.bot_id).each do |check| 
+			= form_for Entity.new, url: entities_create_check_entity_path, remote: true do |f|
+				= f.hidden_field :bot_id, value: bot_action.bot_id
+				= f.hidden_field :name, value: check.name
+				= f.hidden_field :intent, value: check.intent
+				= f.submit check.name, class: 'btn btn-sm', id: 'btn-chat'
 	- elsif 
 		/ youtube link
 		/ event

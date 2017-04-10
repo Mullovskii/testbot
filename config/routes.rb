@@ -3,6 +3,7 @@ require 'api_constraints'
 
 Rails.application.routes.draw do
 
+  resources :checks
   resources :keys
   resources :samples
   namespace :api, defaults: {format: 'json'} do
@@ -32,6 +33,8 @@ Rails.application.routes.draw do
   resources :lessons
   resources :bots
   post 'bot_actions/process_user_input'
+  post 'bot_actions/greeting'
+  post 'entities/create_check_entity'
   
 
   mount ResqueWeb::Engine => "/resque_web"

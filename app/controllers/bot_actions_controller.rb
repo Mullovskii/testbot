@@ -38,6 +38,18 @@ class BotActionsController < ApplicationController
       format.js
     end
   end
+
+  def greeting
+    @bot_action = current_user.bot_actions.build(bot_action_params)
+    if @bot_action.save
+      @return_user_input = @bot_action.user_input
+      computed_path = @bot_action.process_input(@return_user_input)
+      @return_bot_response = @bot_action.bot_response
+    end
+    respond_to do |format|
+      format.js
+    end
+  end
  
   private
  
