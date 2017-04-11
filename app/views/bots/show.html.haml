@@ -1,3 +1,7 @@
+- if current_user.present?
+  .col-xs-0
+    = render 'layouts/chat_bot', bot_action: @bot_action, latest_bot_actions: @latest_bot_actions
+
 %p#notice= notice
 
 = link_to 'Edit', edit_bot_path(@bot)
@@ -10,8 +14,11 @@
   %b Bot:
   = @bot.name
   / =Entity.last.inspect
+  / = current_user.entities.inspect
+
   / = current_user.entities.destroy_all
   / = BotAction.destroy_all
+  
   / - if UserSay.last.input.match(/@[\wа-я]+/i)
   /   - u = UserSay.last
   /   - u.samples.each do |s|
@@ -20,11 +27,7 @@
   /         - s.name
 
 
-
   
-
-
-
 
 
 
@@ -34,7 +37,120 @@
 %p Начни с интента. Intent - это то, вокруг чего построен короткий диалог из нескольких фраз.
 %p Если интент начинает бот - выбери «bot intent», если пользователь - «user intent». «Hello intent» - приветствие бота при открытии чата. Default - когда бот что-то не понял.
 
-%h5 
+
+%h2
+  + hello
+
+%p Когда пользователь кликнет "Привет, #{@bot.name}Bot"
+
+.col-md-6
+  %h4 Бот реагирует:
+  %ul
+    - @bot.lessons.where(intent: "start_talk_intent").take.acts.where(sequence: 1).each do |act|
+      %li= act.bot_say
+      = link_to 'Destroy',  act,  method: :delete, data: { confirm: 'Are you sure?' } 
+  
+  = form_for @act do |f|
+    .field
+      = f.label "Бот отвечает"
+      = f.text_field :bot_say
+      = f.hidden_field :intent, value: "start_talk_intent"
+      = f.hidden_field :bot_id, value: @bot.id
+      = f.hidden_field :sequence, value: 1
+      = f.hidden_field :lesson_id, value: @bot.lessons.where(intent: "start_talk_intent").take.id
+      = f.submit '+'
+  
+  / attached media
+  %h5 Прикрепить к ответу:
+  .col-md-12
+    %h6 Post:
+    - if @bot.lessons.where(intent: "start_talk_intent").take.posts.length < 1 
+      = form_for @post do |f|
+        .field  
+          = f.hidden_field :bot_id, value: @bot.id
+          = f.hidden_field :sequence, value: 1
+          = f.hidden_field :lesson_id, value: @bot.lessons.where(intent: "start_talk_intent").take.id
+          = f.hidden_field :intent, value: "start_talk_intent"
+          = f.label :title
+          = f.text_field :title            
+          = f.label :body
+          = f.text_area :body
+          = f.label :link
+          = f.text_field :link
+          = f.label :photo
+          = f.text_field :photo
+        .actions
+          = f.submit 'Save'
+    
+    - else 
+      = form_for @bot.lessons.where(intent: "start_talk_intent").take.posts.take do |f|
+        .field  
+          = f.hidden_field :bot_id, value: @bot.id
+          = f.hidden_field :lesson_id, value: @bot.lessons.where(intent: "start_talk_intent").take.id
+          = f.hidden_field :intent, value: "start_talk_intent"
+          = f.hidden_field :sequence, value: 1
+          = f.label :title
+          = f.text_field :title            
+          = f.label :body
+          = f.text_area :body
+          = f.label :link
+          = f.text_field :link
+          = f.label :photo
+          = f.text_field :photo
+        .actions
+          = f.submit 'Save'
+      =link_to "X", post_path(lesson.posts.take), method: :delete
+  
+  .col-md-12
+
+    %h6 CheckBox:
+    - if @bot.lessons.where(intent: "start_talk_intent").take.checks.length >= 1
+      - @bot.lessons.where(intent: "start_talk_intent").take.checks.each do |check|
+        = check.name
+        =link_to "X", check_path(check), method: :delete
+
+    
+    = form_for Check.new do |f|
+      .field  
+        = f.hidden_field :bot_id, value: @bot.id
+        = f.hidden_field :sequence, value: 1
+        = f.hidden_field :lesson_id, value: @bot.lessons.where(intent: "start_talk_intent").take.id
+        = f.hidden_field :intent, value: "start_talk_intent"
+        = f.label :name
+        = f.text_field :name    
+      .actions
+        = f.submit '+'    
+
+    - if @bot.lessons.where(intent: "start_talk_intent").take.checks.length >= 1
+      .row
+        Когда пользователь завершит выбор, кликнув "Done" 
+        .col-md-6
+          %h4 Бот отреагирует:
+          %ul
+            - @bot.lessons.where(intent: "start_talk_intent").take.acts.where(sequence: 2).each do |act|
+              %li= act.bot_say
+              = link_to 'Destroy',  act,  method: :delete, data: { confirm: 'Are you sure?' } 
+      
+      = form_for @act do |f|
+        .field
+          = f.label "Бот отреагирует"
+          = f.text_field :bot_say
+          = f.hidden_field :intent, value: "start_talk_intent"
+          = f.hidden_field :bot_id, value: @bot.id
+          = f.hidden_field :sequence, value: 2
+          = f.hidden_field :lesson_id, value: @bot.lessons.where(intent: "start_talk_intent").take.id
+          = f.submit '+'  
+
+
+/ = form_for @user_intent do |f|
+/   / = f.label "+ user intent"
+/   = f.text_field :intent
+/   = f.hidden_field :bot_id, value: @bot.id
+/   = f.hidden_field :user_proactive, value: true
+/   = f.submit '+'
+
+.row
+%h2
   + user intent
 
 = form_for @user_intent do |f|
@@ -46,7 +162,7 @@
 
 
 %ul
-  - @user_intents.each do |lesson|
+  - @user_intents.where.not(intent: "start_talk_intent").each do |lesson|
     %h4
       %b= lesson.intent
       = link_to 'Destroy',  lesson,  method: :delete, data: { confirm: 'Are you sure?' } 
@@ -149,8 +265,8 @@
 
 
 
-
-%h5 
+.row
+%h2
   + bot intent
 
 = form_for @bot_intent do |f|

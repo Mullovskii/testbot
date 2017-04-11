@@ -15,12 +15,14 @@ ActiveRecord::Schema.define(version: 20170410190505) do
   create_table "acts", force: :cascade do |t|
     t.string   "bot_say"
     t.string   "intent"
+    t.integer  "sequence"
+    t.boolean  "waiting_response"
     t.integer  "lesson_id"
     t.integer  "bot_id"
     t.integer  "user_id"
-    t.boolean  "proactive",  default: false
-    t.datetime "created_at",                 null: false
-    t.datetime "updated_at",                 null: false
+    t.boolean  "proactive",        default: false
+    t.datetime "created_at",                       null: false
+    t.datetime "updated_at",                       null: false
     t.index ["bot_id"], name: "index_acts_on_bot_id"
     t.index ["lesson_id"], name: "index_acts_on_lesson_id"
     t.index ["user_id"], name: "index_acts_on_user_id"
@@ -30,10 +32,12 @@ ActiveRecord::Schema.define(version: 20170410190505) do
     t.string   "user_input"
     t.string   "bot_response"
     t.string   "intent"
+    t.integer  "sequence"
+    t.boolean  "waiting_response"
     t.integer  "user_id"
     t.integer  "bot_id"
-    t.datetime "created_at",   null: false
-    t.datetime "updated_at",   null: false
+    t.datetime "created_at",       null: false
+    t.datetime "updated_at",       null: false
     t.index ["bot_id"], name: "index_bot_actions_on_bot_id"
     t.index ["user_id"], name: "index_bot_actions_on_user_id"
   end
@@ -52,6 +56,7 @@ ActiveRecord::Schema.define(version: 20170410190505) do
     t.string   "name"
     t.string   "key"
     t.string   "intent"
+    t.integer  "sequence"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["bot_id"], name: "index_checks_on_bot_id"
@@ -74,6 +79,7 @@ ActiveRecord::Schema.define(version: 20170410190505) do
     t.integer  "bot_id"
     t.integer  "lesson_id"
     t.string   "intent"
+    t.integer  "sequence"
     t.string   "name"
     t.string   "place"
     t.text     "description"
@@ -94,6 +100,7 @@ ActiveRecord::Schema.define(version: 20170410190505) do
     t.integer  "bot_id"
     t.integer  "lesson_id"
     t.string   "name"
+    t.integer  "sequence"
     t.datetime "created_at",  null: false
     t.datetime "updated_at",  null: false
     t.index ["bot_id"], name: "index_keys_on_bot_id"
@@ -117,14 +124,16 @@ ActiveRecord::Schema.define(version: 20170410190505) do
     t.integer  "bot_id"
     t.integer  "lesson_id"
     t.string   "intent"
+    t.integer  "sequence"
+    t.boolean  "waiting_response"
     t.string   "title"
     t.text     "body"
     t.string   "link"
     t.string   "photo"
     t.string   "token"
-    t.boolean  "proactive",  default: false
-    t.datetime "created_at",                 null: false
-    t.datetime "updated_at",                 null: false
+    t.boolean  "proactive",        default: false
+    t.datetime "created_at",                       null: false
+    t.datetime "updated_at",                       null: false
     t.index ["bot_id"], name: "index_posts_on_bot_id"
     t.index ["lesson_id"], name: "index_posts_on_lesson_id"
   end
@@ -135,6 +144,7 @@ ActiveRecord::Schema.define(version: 20170410190505) do
     t.integer  "key_id"
     t.string   "name"
     t.string   "key_name"
+    t.integer  "sequence"
     t.datetime "created_at",  null: false
     t.datetime "updated_at",  null: false
     t.index ["bot_id"], name: "index_samples_on_bot_id"
@@ -146,6 +156,8 @@ ActiveRecord::Schema.define(version: 20170410190505) do
     t.integer  "bot_id"
     t.integer  "lesson_id"
     t.string   "intent"
+    t.integer  "sequence"
+    t.boolean  "waiting_response"
     t.integer  "time"
     t.boolean  "repeat"
     t.boolean  "repeat_daily"
@@ -157,8 +169,8 @@ ActiveRecord::Schema.define(version: 20170410190505) do
     t.boolean  "thursday"
     t.boolean  "friday"
     t.boolean  "saturday"
-    t.datetime "created_at",   null: false
-    t.datetime "updated_at",   null: false
+    t.datetime "created_at",       null: false
+    t.datetime "updated_at",       null: false
     t.index ["bot_id"], name: "index_schedules_on_bot_id"
     t.index ["lesson_id"], name: "index_schedules_on_lesson_id"
   end
@@ -167,12 +179,13 @@ ActiveRecord::Schema.define(version: 20170410190505) do
     t.string   "input"
     t.string   "regexp"
     t.string   "intent"
+    t.boolean  "waiting_response"
     t.integer  "lesson_id"
     t.integer  "user_id"
     t.integer  "bot_id"
-    t.boolean  "extract_data", default: false
-    t.datetime "created_at",                   null: false
-    t.datetime "updated_at",                   null: false
+    t.boolean  "extract_data",     default: false
+    t.datetime "created_at",                       null: false
+    t.datetime "updated_at",                       null: false
     t.index ["bot_id"], name: "index_user_says_on_bot_id"
     t.index ["lesson_id"], name: "index_user_says_on_lesson_id"
     t.index ["user_id"], name: "index_user_says_on_user_id"

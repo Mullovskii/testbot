@@ -6,6 +6,7 @@ class CreateChecks < ActiveRecord::Migration[5.0]
       t.string :name
       t.string :key
       t.string :intent
+      t.integer :sequence
 
       t.timestamps
     end

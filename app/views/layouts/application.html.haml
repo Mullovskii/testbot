@@ -34,5 +34,5 @@
       .col-xs-6
         = yield
       .col-xs-0
-        - if current_user.present?
-          = render 'layouts/chat_bot', bot_action: @bot_action, latest_bot_actions: @latest_bot_actions
+        / - if current_user.present?
+        /   = render 'layouts/chat_bot', bot_action: @bot_action, latest_bot_actions: @latest_bot_actions

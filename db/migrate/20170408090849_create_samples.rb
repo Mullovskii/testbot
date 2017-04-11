@@ -6,6 +6,8 @@ class CreateSamples < ActiveRecord::Migration[5.0]
       t.references :key, foreign_key: true
       t.string :name
       t.string :key_name
+      t.integer :sequence
+
       t.timestamps
     end
   end

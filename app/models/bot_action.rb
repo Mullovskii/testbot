@@ -13,6 +13,8 @@ class BotAction < ApplicationRecord
 
 #1
 def process_input(user_input)
+  if self.intent.nil?
+
   user_input_tokens = clean_user_input(user_input)
   # common_array = user_input_tokens & EVENTS_ARRAY["events"]  #Intersection of both arrays
   # common_word = common_array.present? ? EVENTS_ARRAY.keys[0] : "classification_failed"
@@ -72,7 +74,8 @@ def process_input(user_input)
   if self.bot_response.match(/@[\wа-я]+/i)
     # self.update(bot_response: change_entity(Act.where(bot_id: self.bot_id, intent: self.intent).sample.bot_say))
     self.update(bot_response: change_entity(self.bot_response))
-  end   
+  end  
+  end 
 end
 
 def change_entity(bot_response)

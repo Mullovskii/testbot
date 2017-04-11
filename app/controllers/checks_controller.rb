@@ -69,6 +69,6 @@ class ChecksController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def check_params
-      params.require(:check).permit(:bot_id, :lesson_id, :name, :key, :intent)
+      params.require(:check).permit(:bot_id, :lesson_id, :name, :key, :intent, :sequence, :waiting_response)
     end
 end

@@ -7,6 +7,7 @@ class CreateEntities < ActiveRecord::Migration[5.0]
       t.references :bot, foreign_key: true
       t.string :intent
 
+
       t.timestamps
     end
   end

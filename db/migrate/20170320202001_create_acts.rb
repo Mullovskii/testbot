@@ -3,6 +3,8 @@ class CreateActs < ActiveRecord::Migration[5.0]
     create_table :acts do |t|
       t.string :bot_say
       t.string :intent
+      t.integer :sequence
+      t.boolean :waiting_response
       # t.string :link
       # t.boolean :yes_no, default: false
       t.references :lesson, foreign_key: true

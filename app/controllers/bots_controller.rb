@@ -55,6 +55,10 @@ class BotsController < ApplicationController
     #@bot = Bot.new(bot_params)
     @bot = current_user.bots.create(bot_params)
 
+    if @bot.save
+      @lesson = current_user.lessons.create(bot_id: @bot.id, intent: "start_talk_intent", user_proactive: true)
+    end
+
     respond_to do |format|
       if @bot.save
         format.html { redirect_to @bot, notice: 'Bot was successfully created.' }

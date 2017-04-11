@@ -4,6 +4,7 @@ class CreateUserSays < ActiveRecord::Migration[5.0]
       t.string :input
       t.string :regexp
       t.string :intent
+      t.boolean :waiting_response
       t.references :lesson, foreign_key: true
       t.references :user, foreign_key: true
       t.references :bot, foreign_key: true
