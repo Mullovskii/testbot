@@ -3,6 +3,7 @@ require 'api_constraints'
 
 Rails.application.routes.draw do
 
+  resources :subscriptions
   resources :checks
   resources :keys
   resources :samples

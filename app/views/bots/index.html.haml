@@ -19,5 +19,6 @@
         %td= link_to 'Destroy', bot, :method => :delete, :data => { :confirm => 'Are you sure?' }
 
 %br
+= Bot.last.inspect
 
 = link_to 'New Bot', new_bot_path

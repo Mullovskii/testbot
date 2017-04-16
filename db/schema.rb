@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170410190505) do
+ActiveRecord::Schema.define(version: 20170416102212) do
 
   create_table "acts", force: :cascade do |t|
     t.string   "bot_say"
@@ -44,9 +44,10 @@ ActiveRecord::Schema.define(version: 20170410190505) do
 
   create_table "bots", force: :cascade do |t|
     t.string   "name"
+    t.text     "description"
     t.integer  "user_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at",  null: false
+    t.datetime "updated_at",  null: false
     t.index ["user_id"], name: "index_bots_on_user_id"
   end
 
@@ -173,6 +174,16 @@ ActiveRecord::Schema.define(version: 20170410190505) do
     t.datetime "updated_at",       null: false
     t.index ["bot_id"], name: "index_schedules_on_bot_id"
     t.index ["lesson_id"], name: "index_schedules_on_lesson_id"
+  end
+
+  create_table "subscriptions", force: :cascade do |t|
+    t.integer  "user_id"
+    t.integer  "bot_id"
+    t.boolean  "active"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["bot_id"], name: "index_subscriptions_on_bot_id"
+    t.index ["user_id"], name: "index_subscriptions_on_user_id"
   end
 
   create_table "user_says", force: :cascade do |t|

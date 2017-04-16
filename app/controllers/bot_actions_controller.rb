@@ -46,6 +46,8 @@ class BotActionsController < ApplicationController
     end
   end
 
+
+
   # def greeting
   #   @bot_action = current_user.bot_actions.build(bot_action_params)
   #   if @bot_action.save

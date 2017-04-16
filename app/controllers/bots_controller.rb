@@ -40,6 +40,10 @@ class BotsController < ApplicationController
     # render json: @bot, include: [:lessons, :acts], test: @user_intents, status: :ok
   end
 
+  def clean_chat
+   
+  end
+
   # GET /bots/new
   def new
     @bot = Bot.new
@@ -53,9 +57,10 @@ class BotsController < ApplicationController
   # POST /bots.json
   def create
     #@bot = Bot.new(bot_params)
-    @bot = current_user.bots.create(bot_params)
-
+    # @bot = current_user.bots.create(bot_params)
+    @bot = Bot.create(bot_params)
     if @bot.save
+      @bot.update(user_id: current_user.id)
       @lesson = current_user.lessons.create(bot_id: @bot.id, intent: "start_talk_intent", user_proactive: true)
     end
 

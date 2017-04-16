@@ -4,9 +4,9 @@
       .panel.panel-primary
         .panel-body
           %ul.chat
-            - if latest_bot_actions.length < 1
+            - if latest_bot_actions.length < 1 
               / = link_to "Greet #{@bot.name + "Bot"}", bot_actions_greeting_path(:bot_id => @bot.id), method: :post
-              = form_for bot_action, url: bot_actions_process_user_input_path, remote: true do |f|
+              = form_for BotAction.new, url: bot_actions_process_user_input_path, remote: true do |f|
                 .input-group
                   - if @bot
                     = f.hidden_field :bot_id, value: @bot.id
@@ -50,7 +50,7 @@
                         = f.hidden_field :intent, value: check.intent
                         = f.submit check.name, class: 'btn btn-sm', id: 'btn-chat'
 
-                    = form_for bot_action, url: bot_actions_process_user_input_path, remote: true do |f|
+                    = form_for BotAction.new, url: bot_actions_process_user_input_path, remote: true do |f|
                       .input-group
                         - if @bot
                           = f.hidden_field :bot_id, value: @bot.id

@@ -1,0 +1,15 @@
+%p#notice= notice
+
+%p
+  %b User:
+  = @subscription.user
+%p
+  %b Bot:
+  = @subscription.bot
+%p
+  %b Active:
+  = @subscription.active
+
+= link_to 'Edit', edit_subscription_path(@subscription)
+\|
+= link_to 'Back', subscriptions_path

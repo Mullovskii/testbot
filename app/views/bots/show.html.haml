@@ -1,4 +1,6 @@
 - if current_user.present?
+  / = link to "Clean", BotAction.destroy_all
+
   .col-xs-0
     = render 'layouts/chat_bot', bot_action: @bot_action, latest_bot_actions: @latest_bot_actions
 
@@ -13,12 +15,40 @@
 %h1
   %b Bot:
   = @bot.name
+
+%h3
+  / = Subscription.destroy_all
+  - if current_user.subscriptions.where(bot_id: @bot.id).take
+    = link_to "Отписаться", subscription_path(current_user.subscriptions.where(bot_id: @bot.id).take), method: :delete
+
+  - else
+    = form_for Subscription.new do |f|
+      .field   
+        = f.hidden_field :bot_id, value: @bot.id
+        = f.hidden_field :user_id, value: current_user.id
+        = f.submit 'Подписаться на бота'  
+  / = Time.now
+
+  / - Schedule.all.where(time: Time.now.hour).each do |schedule|
+  /   - if schedule.repeat_daily == true || schedule.send("#{Time.now.strftime("%A")}".downcase.to_sym) == true
+  /     = 1
+
+  / =Time.now.strftime("%A")
+  
+  = BotAction.last.inspect
+
+  / = Schedule.destroy_all
+  / = Schedule.all.inspect
+ 
+      
+  / =current_user.entities.inspect
+  / = BotAction.last.inspect
   / =Entity.last.inspect
   / = current_user.entities.inspect
 
   / = current_user.entities.destroy_all
   / = BotAction.destroy_all
-  
+
   / - if UserSay.last.input.match(/@[\wа-я]+/i)
   /   - u = UserSay.last
   /   - u.samples.each do |s|
@@ -346,14 +376,15 @@
               .field
                 = f.hidden_field :bot_id, value: @bot.id
                 = f.hidden_field :lesson_id, value: lesson.id
-                = f.hidden_field :intent, value: lesson.intent
+                = f.hidden_field :intent, value: lesson.intent+"_act_first"
                 = f.label "отправить в"
                 = f.select :time, (0..23)
                 %p : 00
-                = f.label "повтор"
-                = f.check_box :repeat
+                / = f.label "повтор"
+                / = f.check_box :repeat
                 = f.label "ежедневно"
                 = f.check_box :repeat_daily
+                .br
                 = f.label "отправить через"
                 = f.number_field :remind_over
                 %p дней после скачивания бота 
@@ -388,10 +419,11 @@
                 = f.label "отправить в"
                 = f.select :time, (0..23)
                 %p : 00
-                = f.label "повтор"
-                = f.check_box :repeat
+                / = f.label "повтор"
+                / = f.check_box :repeat
                 = f.label "ежедневно"
                 = f.check_box :repeat_daily
+                .br
                 = f.label "отправить через"
                 = f.number_field :remind_over
                 %p дней после скачивания бота 
