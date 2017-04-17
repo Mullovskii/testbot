@@ -102,11 +102,11 @@ ActiveRecord::Schema.define(version: 20170416102212) do
     t.integer  "lesson_id"
     t.string   "name"
     t.integer  "sequence"
+    t.string   "intent"
     t.datetime "created_at",  null: false
     t.datetime "updated_at",  null: false
     t.index ["bot_id"], name: "index_keys_on_bot_id"
     t.index ["lesson_id"], name: "index_keys_on_lesson_id"
-    t.index ["user_say_id"], name: "index_keys_on_user_say_id"
   end
 
   create_table "lessons", force: :cascade do |t|

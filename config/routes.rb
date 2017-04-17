@@ -6,6 +6,7 @@ Rails.application.routes.draw do
   resources :subscriptions
   resources :checks
   resources :keys
+  resources :entities
   resources :samples
   namespace :api, defaults: {format: 'json'} do
     scope module: :v1, constraints: ApiConstraints.new(version: 1, default: true) do
@@ -13,6 +14,7 @@ Rails.application.routes.draw do
       resources :events
       resources :schedules
       resources :posts
+      resources :entities
       resources :user_says
       resources :acts
       resources :lessons

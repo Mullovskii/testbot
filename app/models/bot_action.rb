@@ -65,25 +65,24 @@ def process_input(user_input)
   if Act.where(bot_id: self.bot_id, intent: result.max_class.to_s).length >=1
     self.update_attribute(:bot_response, Act.where(bot_id: self.bot_id, intent: result.max_class.to_s).sample.bot_say) 
   else
-    self.update_attribute(:bot_response, "Похоже бот не знает что ответить") 
+    self.update_attribute(:bot_response, "Похоже бот не знает что ответить")
+    self.destroy
   end
 
   if Lesson.where(bot_id: self.bot_id, intent: self.intent, extract_data: true).length >= 1
     create_entity
   end
+ 
+  end 
   if self.bot_response.match(/@[\wа-я]+/i)
     # self.update(bot_response: change_entity(Act.where(bot_id: self.bot_id, intent: self.intent).sample.bot_say))
     self.update(bot_response: change_entity(self.bot_response))
-  end  
   end 
 end
 
 def change_entity(bot_response)
-  # self.bot_response.gsub(/@[\wа-я]+/i).with_index { |m, i| Entity.where(bot_id: self.bot_id, intent: self.intent, key: m[/[^@]+/]  ).take.name   }
-  # if Entity.where(bot_id: self.bot_id, intent: self.intent, user_id: self.user_id).take
-    self.bot_response.gsub(/@[\wа-я]+/i).with_index { |m, i| Entity.where(bot_id: self.bot_id, key: m[/[^@]+/], user_id: self.user_id).last.name if Entity.where(bot_id: self.bot_id, key: m[/[^@]+/], user_id: self.user_id).take  }
-    # self.bot_response.gsub(/@[\wа-я]+/i).with_index { |m, i| p m}
-  # end
+    # self.bot_response.gsub(/@[\wа-я]+/i).with_index { |m, i| Entity.where(bot_id: self.bot_id, key: m[/[^@]+/], user_id: self.user_id).last.name if Entity.where(bot_id: self.bot_id, key: m[/[^@]+/], user_id: self.user_id).take  }
+    self.bot_response.gsub(/@[\wа-я]+/i).with_index { |m, i| Entity.where(bot_id: self.bot_id, key: m, user_id: self.user_id).last.name if Entity.where(bot_id: self.bot_id, key: m, user_id: self.user_id).take  }
 end
 
 #save @entity like @user_name from user_say

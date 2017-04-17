@@ -24,14 +24,18 @@ class KeysController < ApplicationController
   # POST /keys
   # POST /keys.json
   def create
-    @key = Key.new(key_params)
+    @key = Key.create(key_params)
 
     respond_to do |format|
       if @key.save
-        format.html { redirect_to @key, notice: 'Key was successfully created.' }
+        unless @key.name.match(/@[\wа-я]+/i)
+          @key.update(name: "@" + @key.name)
+        end  
+
+        format.html { redirect_to :back, notice: 'Key was successfully created.' }
         format.json { render :show, status: :created, location: @key }
       else
-        format.html { render :new }
+        format.html { redirect_to :back }
         format.json { render json: @key.errors, status: :unprocessable_entity }
       end
     end
@@ -42,10 +46,10 @@ class KeysController < ApplicationController
   def update
     respond_to do |format|
       if @key.update(key_params)
-        format.html { redirect_to @key, notice: 'Key was successfully updated.' }
+        format.html { redirect_to :back, notice: 'Key was successfully updated.' }
         format.json { render :show, status: :ok, location: @key }
       else
-        format.html { render :edit }
+        format.html { redirect_to :back }
         format.json { render json: @key.errors, status: :unprocessable_entity }
       end
     end
@@ -56,7 +60,7 @@ class KeysController < ApplicationController
   def destroy
     @key.destroy
     respond_to do |format|
-      format.html { redirect_to keys_url, notice: 'Key was successfully destroyed.' }
+      format.html { redirect_to :back, notice: 'Key was successfully destroyed.' }
       format.json { head :no_content }
     end
   end
@@ -69,6 +73,6 @@ class KeysController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def key_params
-      params.require(:key).permit(:user_say_id, :bot_id, :name)
+      params.require(:key).permit(:user_say_id, :bot_id, :name, :intent, :sequence, :lesson_id)
     end
 end

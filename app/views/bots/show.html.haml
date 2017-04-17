@@ -1,6 +1,5 @@
 - if current_user.present?
-  / = link to "Clean", BotAction.destroy_all
-
+  / = BotAction.destroy_all
   .col-xs-0
     = render 'layouts/chat_bot', bot_action: @bot_action, latest_bot_actions: @latest_bot_actions
 
@@ -9,6 +8,7 @@
 = link_to 'Edit', edit_bot_path(@bot)
 \|
 = link_to 'Back', bots_path
+
 %p
   %b By:
   = @bot.user.email
@@ -17,7 +17,6 @@
   = @bot.name
 
 %h3
-  / = Subscription.destroy_all
   - if current_user.subscriptions.where(bot_id: @bot.id).take
     = link_to "Отписаться", subscription_path(current_user.subscriptions.where(bot_id: @bot.id).take), method: :delete
 
@@ -27,38 +26,6 @@
         = f.hidden_field :bot_id, value: @bot.id
         = f.hidden_field :user_id, value: current_user.id
         = f.submit 'Подписаться на бота'  
-  / = Time.now
-
-  / - Schedule.all.where(time: Time.now.hour).each do |schedule|
-  /   - if schedule.repeat_daily == true || schedule.send("#{Time.now.strftime("%A")}".downcase.to_sym) == true
-  /     = 1
-
-  / =Time.now.strftime("%A")
-  
-  = BotAction.last.inspect
-
-  / = Schedule.destroy_all
-  / = Schedule.all.inspect
- 
-      
-  / =current_user.entities.inspect
-  / = BotAction.last.inspect
-  / =Entity.last.inspect
-  / = current_user.entities.inspect
-
-  / = current_user.entities.destroy_all
-  / = BotAction.destroy_all
-
-  / - if UserSay.last.input.match(/@[\wа-я]+/i)
-  /   - u = UserSay.last
-  /   - u.samples.each do |s|
-  /     = u.input.gsub(/@[\wа-я]+/i).with_index do |m, i| 
-  /       - if s.key_name == m
-  /         - s.name
-
-
-  
-
 
 
 %p
@@ -149,7 +116,7 @@
         = f.label :name
         = f.text_field :name    
       .actions
-        = f.submit '+'    
+        = f.submit '+'   
 
     - if @bot.lessons.where(intent: "start_talk_intent").take.checks.length >= 1
       .row
@@ -171,13 +138,48 @@
           = f.hidden_field :lesson_id, value: @bot.lessons.where(intent: "start_talk_intent").take.id
           = f.submit '+'  
 
+    %h6 Данные от пользователя:
+    %p Присвой имя данным, которые ты планируешь принять от пользователя. После используй "@имя данных" (н-р, @адрес) где угодно в других диалогах:
+    - if Key.where(bot_id: @bot.id, intent: "start_talk_intent", sequence: 1).take
+      - Key.where(bot_id: @bot.id, intent: "start_talk_intent", sequence: 1).each do |key|
+        = key.name
+        =link_to "X", key_path(key), method: :delete
 
-/ = form_for @user_intent do |f|
-/   / = f.label "+ user intent"
-/   = f.text_field :intent
-/   = f.hidden_field :bot_id, value: @bot.id
-/   = f.hidden_field :user_proactive, value: true
-/   = f.submit '+'
+    = form_for Key.new do |f|
+      .field  
+        = f.hidden_field :bot_id, value: @bot.id
+        / = f.hidden_field :user_id, value: current_user.id
+        = f.hidden_field :intent, value: "start_talk_intent"
+        = f.hidden_field :sequence, value: 1
+        / = f.hidden_field :user_say_id, value: nil
+        = f.hidden_field :lesson_id, value: @bot.lessons.where(intent: "start_talk_intent").take.id
+        = f.label "имя данных:"
+        = f.text_field :name    
+      .actions
+        = f.submit '+' 
+
+    - if @bot.lessons.where(intent: "start_talk_intent").take.keys.length >= 1
+      .row
+        Когда пользователь завершит выбор, кликнув "Done" 
+        .col-md-6
+          %h4 Бот отреагирует:
+          %ul
+            - @bot.lessons.where(intent: "start_talk_intent").take.acts.where(sequence: 2).each do |act|
+              %li= act.bot_say
+              = link_to 'Destroy',  act,  method: :delete, data: { confirm: 'Are you sure?' } 
+      
+      = form_for @act do |f|
+        .field
+          = f.label "Бот отреагирует"
+          = f.text_field :bot_say
+          = f.hidden_field :intent, value: "start_talk_intent"
+          = f.hidden_field :bot_id, value: @bot.id
+          = f.hidden_field :sequence, value: 2
+          = f.hidden_field :lesson_id, value: @bot.lessons.where(intent: "start_talk_intent").take.id
+          = f.submit '+'   
+
+
+
 
 .row
 %h2
