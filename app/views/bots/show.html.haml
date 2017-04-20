@@ -1,9 +1,11 @@
 - if current_user.present?
-  / = BotAction.destroy_all
+  = BotAction.destroy_all
   .col-xs-0
     = render 'layouts/chat_bot', bot_action: @bot_action, latest_bot_actions: @latest_bot_actions
 
 %p#notice= notice
+
+
 
 = link_to 'Edit', edit_bot_path(@bot)
 \|
@@ -15,7 +17,8 @@
 %h1
   %b Bot:
   = @bot.name
-
+  = Entity.last.inspect
+  = Key.last.inspect
 %h3
   - if current_user.subscriptions.where(bot_id: @bot.id).take
     = link_to "Отписаться", subscription_path(current_user.subscriptions.where(bot_id: @bot.id).take), method: :delete

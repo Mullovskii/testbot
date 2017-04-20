@@ -5,9 +5,9 @@ class EntitiesController < ApplicationController
     if @entity.save
       @user_entities = current_user.entities.map { |e| e.name }
       if @entity.key == nil
-        @entity.update(key: "@#{@entity.name.downcase}")
-      else
-        # @entity.update(key: "@#{@entity.name.downcase}")
+        @entity.update(key: "@#{@entity.name.mb_chars.downcase.to_s}")
+      # else
+      #   @entity.update(key: "@#{@entity.name.downcase}")
       end
     end
     respond_to do |format|

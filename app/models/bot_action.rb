@@ -95,7 +95,7 @@ def create_entity
         captures = self.user_input.match(user_say.regexp).captures
         h = Hash[names.zip captures]
         h.each do |key, entity|
-          Entity.create(key: key, name: entity, user_id: self.user_id, bot_id: self.bot_id, intent: self.intent)
+          Entity.create(key: "@"+key, name: entity, user_id: self.user_id, bot_id: self.bot_id, intent: self.intent)
         end
       end
     end
