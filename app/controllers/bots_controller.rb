@@ -10,26 +10,18 @@ class BotsController < ApplicationController
   # GET /bots/1
   # GET /bots/1.json
   def show
-    # #intent = talk category when user shoots first
-    # @user_intent = Lesson.new
-    # #intent = talk category when bot starts the talk
-    # @bot_intent = Lesson.new
-    # #intent = talk category
-    # @lesson = Lesson.new
-    # #user_input
-    # @user_say = UserSay.new
-    # #bot reaction
-    # @act = Act.new
     
-    # #media attached to act
-    # @post = Post.new
-    # @photo = Post.new
-    # @link = Post.new
-    # @video = Post.new
-    # @schedule = Schedule.new
-    # @event = Event.new
+    # url = "http://www.theverge.com/rss/index.xml"
+    url = "https://www.adme.ru/rss/"
+    Feedjira::Feed.add_common_feed_element 'content'
+    Feedjira::Feed.add_common_feed_element 'img'
+    # Feedjira::Feed.add_common_feed_element 'link'
+    Feedjira::Feed.add_common_feed_element 'image'
+    # @image = Feedjira::Feed.fetch_and_parse url
+    @feed = Feedjira::Feed.fetch_and_parse url
 
-    # @sample = Sample.new
+
+
     @bot_intents = @bot.lessons.where(user_proactive: false)
     @user_intents = @bot.lessons.where(user_proactive: true)
     @latest_bot_actions = @bot.bot_actions.last(5)

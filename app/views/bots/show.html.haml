@@ -28,6 +28,7 @@
   = @bot.name
   / = Entity.last.inspect
   / = Key.last.inspect
+
 %h3
   - if current_user.subscriptions.where(bot_id: @bot.id).take
     = link_to "Отписаться", subscription_path(current_user.subscriptions.where(bot_id: @bot.id).take), method: :delete
@@ -38,6 +39,15 @@
         = f.hidden_field :bot_id, value: @bot.id
         = f.hidden_field :user_id, value: current_user.id
         = f.submit 'Подписаться на бота'  
+
+= @feed.link
+= link_to @feed.entries.first.title, @feed.entries.first.url
+= sanitize @feed.entries.first.summary
+= sanitize @feed.entries.first.content
+
+
+- if @feed.entries.first.image
+  = image_tag(@feed.entries.first.image, class: "image")
 
 
 %p
