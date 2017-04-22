@@ -254,46 +254,43 @@
         %h5 Прикрепить к ответу:
     
         .col-md-12
-          %h6 Post:
-          - if lesson.posts.length < 1 
-            = form_for Post.new do |f|
-              .field  
-                = f.hidden_field :bot_id, value: @bot.id
-                = f.hidden_field :lesson_id, value: lesson.id
-                = f.hidden_field :intent, value: lesson.intent
-                = f.hidden_field :sequence, value: 1
-                = f.label :title
-                = f.text_field :title            
-                = f.label :body
-                = f.text_area :body
-                = f.label :link
-                = f.text_field :link
-                = f.label :photo
-                = f.text_field :photo
-              .actions
-                = f.submit 'Save'
-          - else 
-            = form_for lesson.posts.take do |f|
-              .field  
-                = f.hidden_field :bot_id, value: @bot.id
-                = f.hidden_field :lesson_id, value: lesson.id
-                = f.hidden_field :intent, value: lesson.intent
-                = f.hidden_field :sequence, value: 1
-                = f.label :title
-                = f.text_field :title            
-                = f.label :body
-                = f.text_area :body
-                = f.label :link
-                = f.text_field :link
-                = f.label :photo
-                = f.text_field :photo
-              .actions
-                = f.submit 'Save'
-            =link_to "X", post_path(lesson.posts.take), method: :delete
+          %h4 Медиа:
+          - if lesson.posts.where(sequence: 1).length >= 1 
+            - lesson.posts.where(sequence: 1).each do |post|
+              = post.title
+              = post.body
+              = post.filter
+              = link_to "X", post_path(post), method: :delete
+
+
+          = form_for Post.new do |f|
+            .field  
+              = f.hidden_field :bot_id, value: @bot.id
+              = f.hidden_field :lesson_id, value: lesson.id
+              = f.hidden_field :intent, value: lesson.intent
+              = f.hidden_field :sequence, value: 1
+              = f.label :title
+              = f.text_field :title            
+              = f.label :body
+              = f.text_area :body
+              = f.label :link
+              = f.text_field :link
+              = f.label :photo
+              = f.text_field :photo
+              %b Присвойте посту фильтр-категорию, соответствующую данным, выбранным пользователем из чек-листов. Н-р, если пользователь ранее выбирал интерес "музыка", то, присвоив посту фильтр "музыка", пост будет показываться только пользователям со схожим интересом:
+              = f.label :filter
+              = f.text_field :filter 
+              - if Check.where(bot_id: @bot.id).length >= 1
+                %b Фильтры вашего бота:
+                - Check.where(bot_id: @bot.id).each do |filter| 
+                  = filter.name 
+                  
+            .actions
+              = f.submit 'Save'
+          
 
         .col-md-12
-
-          %h6 CheckBox:
+          %h4 CheckBox:
           - if lesson.checks.where(sequence: 1).length >= 1
             - lesson.checks.each do |check|
               = check.name
@@ -409,43 +406,41 @@
 
         %h5 Прикрепить к ответу:
         .row
-          %h6 Новость
-          - if lesson.posts.where(proactive: true).length < 1 
-            = form_for @post do |f|
-              .field  
-                = f.hidden_field :bot_id, value: @bot.id
-                = f.hidden_field :lesson_id, value: lesson.id
-                = f.hidden_field :intent, value: lesson.intent
-                = f.hidden_field :proactive, value: true
-                = f.hidden_field :sequence, value: 0
-                = f.label :title
-                = f.text_field :title            
-                = f.label :body
-                = f.text_area :body
-                = f.label :link
-                = f.text_field :link
-                = f.label :photo
-                = f.text_field :photo
-              .actions
-                = f.submit 'Save'
-          - else 
-            = form_for lesson.posts.where(proactive: true).take do |f|
-              .field  
-                = f.hidden_field :bot_id, value: @bot.id
-                = f.hidden_field :lesson_id, value: lesson.id
-                = f.hidden_field :intent, value: lesson.intent
-                = f.hidden_field :sequence, value: 0
-                = f.label :title
-                = f.text_field :title            
-                = f.label :body
-                = f.text_area :body
-                = f.label :link
-                = f.text_field :link
-                = f.label :photo
-                = f.text_field :photo
-              .actions
-                = f.submit 'Save'
-                =link_to "X", post_path(lesson.posts.take), method: :delete
+          %h6 Медиа
+          - if lesson.posts.where(proactive: true, sequence: 0).length >= 1
+            - lesson.posts.where(proactive: true, sequence: 0).each do |post|
+              = post.title
+              = post.body
+              = post.filter
+              = link_to "X", post_path(post), method: :delete
+
+          = form_for Post.new do |f|
+            .field  
+              = f.hidden_field :bot_id, value: @bot.id
+              = f.hidden_field :lesson_id, value: lesson.id
+              = f.hidden_field :intent, value: lesson.intent
+              = f.hidden_field :proactive, value: true
+              = f.hidden_field :sequence, value: 0
+              = f.label :title
+              = f.text_field :title            
+              = f.label :body
+              = f.text_area :body
+              = f.label :link
+              = f.text_field :link
+              = f.label :photo
+              = f.text_field :photo
+
+              %b Присвойте посту фильтр-категорию, соответствующую данным, выбранным пользователем из чек-листов. Н-р, если пользователь ранее выбирал интерес "музыка", то, присвоив посту фильтр "музыка", пост будет показываться только пользователям со схожим интересом:
+              = f.label :filter
+              = f.text_field :filter 
+              - if Check.where(bot_id: @bot.id).length >= 1
+                %b Фильтры вашего бота:
+                - Check.where(bot_id: @bot.id).each do |filter| 
+                  = filter.name 
+            .actions
+              = f.submit 'Save'
+          
+         
         .row
           %h6 Время
           - if lesson.schedules.length < 1
