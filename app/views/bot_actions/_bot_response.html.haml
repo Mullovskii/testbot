@@ -6,18 +6,31 @@
 		%strong.pull-right.primary-font Bot
 	%p= return_bot_response
 	
-	- if Post.where(intent: bot_action.intent, bot_id: bot_action.bot_id, sequence: bot_action.sequence).length >= 1
+	- if Post.where(intent: bot_action.intent, bot_id: bot_action.bot_id, sequence: bot_action.sequence, rss: false).length >= 1
 		
-		/ Прикрепленные новости #{Post.where(intent: bot_action.intent, bot_id: bot_action.bot_id, sequence: bot_action.sequence).length}:
+		/ Прикрепленные новости #{Post.where(intent: bot_action.intent, bot_id: bot_action.bot_id, sequence: bot_action.sequence, rss: false).length}:
 		// Проверка на то, соответствует ли пост выбранным ранее интересам пользователям
 		
-		- Post.where(intent: bot_action.intent, bot_id: bot_action.bot_id, sequence: bot_action.sequence).each do |post|
+		- Post.where(intent: bot_action.intent, bot_id: bot_action.bot_id, sequence: bot_action.sequence, rss: false).each do |post|
 			- if current_user.filter_for_user(post)
 				= post.title
 				= post.body
 				= link_to "Ссылка", post.link
 				.image
-					= image_tag(post.photo, class: "image")
+					- if post.photo
+						= image_tag(post.photo, class: "image")
+
+	- if Post.where(intent: bot_action.intent, bot_id: bot_action.bot_id, sequence: bot_action.sequence, rss: true).length >= 1
+									
+		RSS:
+		%br
+		// Проверка на то, соответствует ли RSS выбранным ранее интересам пользователям
+		- Post.where(intent: bot_action.intent, bot_id: bot_action.bot_id, sequence: bot_action.sequence, rss: true).each do |post|
+		
+			- if current_user.filter_for_user(post)
+				- post.parse_rss.entries.each do |entry|
+					= link_to entry.title, entry.url
+					= sanitize entry.summary
 
 	
 

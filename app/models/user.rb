@@ -15,7 +15,7 @@ class User < ApplicationRecord
 
   # Проверка на то, соответствует ли пост выбранным интересам пользователям
   def filter_for_user(post)
-    if post.filter.nil?
+    if post.filter == ''
       return true
     else
       if self.entities.length >=1

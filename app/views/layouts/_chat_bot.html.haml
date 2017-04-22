@@ -11,11 +11,11 @@
 									- if @bot
 										= f.hidden_field :bot_id, value: @bot.id
 										= f.hidden_field :intent, value: "start_talk_intent"
-										= f.hidden_field :user_input, value: "Hey, #{@bot.name}Bot!"
+										= f.hidden_field :user_input, value: "Привет, #{@bot.name}Bot!"
 										= f.hidden_field :sequence, value: 1
 										= f.hidden_field :waiting_response, value: true
 									%span.input-group-btn
-										= f.submit "Greet #{@bot.name + "Bot"}", class: 'btn btn-sm', id: 'btn-chat'
+										= f.submit "Привет #{@bot.name + "Bot"}", class: 'btn btn-sm', id: 'btn-chat'
 						
 						-else
 							- latest_bot_actions.each do |bot_action|
@@ -35,18 +35,36 @@
 									%p= bot_action.bot_response
 									// this should be taken to som json partial
 									
-									- if Post.where(intent: bot_action.intent, bot_id: bot_action.bot_id, sequence: bot_action.sequence).length >= 1
+									
+									- if Post.where(intent: bot_action.intent, bot_id: bot_action.bot_id, sequence: bot_action.sequence, rss: false).length >= 1
 										
 										/ Прикрепленные новости:
 										// Проверка на то, соответствует ли пост выбранным ранее интересам пользователям
-										- Post.where(intent: bot_action.intent, bot_id: bot_action.bot_id, sequence: bot_action.sequence).each do |post|
+										- Post.where(intent: bot_action.intent, bot_id: bot_action.bot_id, sequence: bot_action.sequence, rss: false).each do |post|
 										
 											- if current_user.filter_for_user(post)
 												= post.title
 												= post.body
 												= link_to "Ссылка", post.link
 												.image
-													= image_tag(post.photo, class: "image")
+													- if post.photo
+														= image_tag(post.photo, class: "image")
+
+									- if Post.where(intent: bot_action.intent, bot_id: bot_action.bot_id, sequence: bot_action.sequence, rss: true).length >= 1
+										
+										RSS:
+										%br
+										// Проверка на то, соответствует ли RSS выбранным ранее интересам пользователям
+										- Post.where(intent: bot_action.intent, bot_id: bot_action.bot_id, sequence: bot_action.sequence, rss: true).each do |post|
+										
+											- if current_user.filter_for_user(post)
+												- post.parse_rss.entries.each do |entry|
+													= link_to entry.title, entry.url
+													= sanitize entry.summary
+												
+												
+												
+													
 
 								 
 									- if Check.where(intent: bot_action.intent, bot_id: bot_action.bot_id, sequence: bot_action.sequence).take

@@ -14,6 +14,7 @@ class CreatePosts < ActiveRecord::Migration[5.0]
       t.string :photo
       t.string :token
       t.boolean :proactive, default: false
+      t.boolean :rss, default: false
       t.timestamps
     end
   end

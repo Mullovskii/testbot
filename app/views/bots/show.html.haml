@@ -1,11 +1,21 @@
 
 - if current_user.present?
-  / = BotAction.destroy_all
+  = BotAction.destroy_all
   / = Entity.destroy_all
   .col-xs-0
     = render 'layouts/chat_bot', bot_action: @bot_action, latest_bot_actions: @latest_bot_actions
 
 %p#notice= notice
+
+
+/ = @feed.link
+/ = link_to @feed.entries.first.title, @feed.entries.first.url
+/ = sanitize @feed.entries.first.summary
+/ = sanitize @feed.entries.first.content
+
+
+/ - if @feed.entries.first.image
+/   = image_tag(@feed.entries.first.image, class: "image")
 
 
 
@@ -18,7 +28,6 @@
 / - @b = BotAction.last
 / = BotAction.last.inspect
 / = Act.where(bot_id: @b.bot_id, intent: @b.intent, sequence: @b.sequence).take
-/ = Act.last.inspect
 
 %p
   %b By:
@@ -40,14 +49,7 @@
         = f.hidden_field :user_id, value: current_user.id
         = f.submit 'Подписаться на бота'  
 
-= @feed.link
-= link_to @feed.entries.first.title, @feed.entries.first.url
-= sanitize @feed.entries.first.summary
-= sanitize @feed.entries.first.content
 
-
-- if @feed.entries.first.image
-  = image_tag(@feed.entries.first.image, class: "image")
 
 
 %p
@@ -81,8 +83,9 @@
   
   / attached media
   %h5 Прикрепить к ответу:
+  
   .col-md-12
-    %h4 Медиа:
+    %h4 Пост:
 
     - if @bot.lessons.where(intent: "start_talk_intent").take.posts.length >= 1 
       - @bot.lessons.where(intent: "start_talk_intent").take.posts.each do |post|
@@ -107,6 +110,37 @@
         = f.text_field :photo
 
         %b Присвойте посту фильтр-категорию, соответствующую данным, выбранным пользователем из чек-листов. Н-р, если пользователь ранее выбирал интерес "музыка", то, присвоив посту фильтр "музыка", пост будет показываться только пользователям со схожим интересом:
+        = f.label :filter
+        = f.text_field :filter 
+        - if Check.where(bot_id: @bot.id).length >= 1
+          %b Фильтры вашего бота:
+          - Check.where(bot_id: @bot.id).each do |filter| 
+            = filter.name 
+      .actions
+        = f.submit 'Save'
+
+
+    .col-md-12
+    %h4 RSS:
+    %p 10 свежих новостей с внешнего ресурса:
+
+    - if @bot.lessons.where(intent: "start_talk_intent").take.posts.where(rss: true).length >= 1 
+      - @bot.lessons.where(intent: "start_talk_intent").take.posts.where(rss: true).each do |post|
+        = post.link
+        = link_to "X", post_path(post), method: :delete
+
+    = form_for Post.new do |f|
+      .field  
+        = f.hidden_field :rss, value: true
+        = f.hidden_field :bot_id, value: @bot.id
+        = f.hidden_field :sequence, value: 1
+        = f.hidden_field :lesson_id, value: @bot.lessons.where(intent: "start_talk_intent").take.id
+        = f.hidden_field :intent, value: "start_talk_intent"
+        
+        = f.label :link
+        = f.text_field :link
+
+        %b Присвойте RSS фильтр-категорию, соответствующую данным, выбранным пользователем из чек-листов. Н-р, если пользователь ранее выбирал интерес "музыка", то, присвоив посту фильтр "музыка", RSS будет показываться только пользователям со схожим интересом:
         = f.label :filter
         = f.text_field :filter 
         - if Check.where(bot_id: @bot.id).length >= 1
@@ -294,7 +328,7 @@
                 %b Фильтры вашего бота:
                 - Check.where(bot_id: @bot.id).each do |filter| 
                   = filter.name 
-                  
+
             .actions
               = f.submit 'Save'
           

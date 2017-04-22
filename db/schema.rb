@@ -134,6 +134,7 @@ ActiveRecord::Schema.define(version: 20170416102212) do
     t.string   "photo"
     t.string   "token"
     t.boolean  "proactive",        default: false
+    t.boolean  "rss",              default: false
     t.datetime "created_at",                       null: false
     t.datetime "updated_at",                       null: false
     t.index ["bot_id"], name: "index_posts_on_bot_id"

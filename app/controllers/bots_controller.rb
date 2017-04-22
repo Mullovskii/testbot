@@ -11,14 +11,7 @@ class BotsController < ApplicationController
   # GET /bots/1.json
   def show
     
-    # url = "http://www.theverge.com/rss/index.xml"
-    url = "https://www.adme.ru/rss/"
-    Feedjira::Feed.add_common_feed_element 'content'
-    Feedjira::Feed.add_common_feed_element 'img'
-    # Feedjira::Feed.add_common_feed_element 'link'
-    Feedjira::Feed.add_common_feed_element 'image'
-    # @image = Feedjira::Feed.fetch_and_parse url
-    @feed = Feedjira::Feed.fetch_and_parse url
+    
 
 
 
