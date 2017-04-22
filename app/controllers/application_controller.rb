@@ -8,6 +8,7 @@ class ApplicationController < ActionController::Base
 # API 
 
 
+
   def new_bot_action
     if current_user.present?
       @bot_action = BotAction.new

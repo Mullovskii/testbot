@@ -5,6 +5,7 @@ class CreatePosts < ActiveRecord::Migration[5.0]
       t.references :bot, foreign_key: true
       t.references :lesson, foreign_key: true
       t.string :intent
+      t.string :filter
       t.integer :sequence
       t.boolean :waiting_response
       t.string :title

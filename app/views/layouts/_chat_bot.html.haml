@@ -1,96 +1,104 @@
 .container
-  .row
-    .col-md-5
-      .panel.panel-primary
-        .panel-body
-          %ul.chat
-            - if latest_bot_actions.length < 1 
-              / = link_to "Greet #{@bot.name + "Bot"}", bot_actions_greeting_path(:bot_id => @bot.id), method: :post
-              = form_for BotAction.new, url: bot_actions_process_user_input_path, remote: true do |f|
-                .input-group
-                  - if @bot
-                    = f.hidden_field :bot_id, value: @bot.id
-                    = f.hidden_field :intent, value: "start_talk_intent"
-                    = f.hidden_field :user_input, value: "Hey, #{@bot.name}Bot!"
-                    = f.hidden_field :sequence, value: 1
-                    = f.hidden_field :waiting_response, value: true
-                  %span.input-group-btn
-                    = f.submit "Greet #{@bot.name + "Bot"}", class: 'btn btn-sm', id: 'btn-chat'
-            -else
-              - latest_bot_actions.each do |bot_action|
-                .chat-body.clearfix
-                  .header
-                    %strong.primary-font Me
-                    %small.pull-right.text-muted
-                      %span.glyphicon.glyphicon-time
-                      #{time_ago_in_words(bot_action.created_at)} ago
-                  %p= bot_action.user_input
-                .chat-body.clearfix
-                  .header
-                    %small.text-muted
-                      %span.glyphicon.glyphicon-time
-                      #{time_ago_in_words(bot_action.updated_at)} ago
-                    %strong.pull-right.primary-font Bot
-                  %p= bot_action.bot_response
-                  // this should be taken to som json partial
-                  
-                  - if Post.where(intent: bot_action.intent, bot_id: bot_action.bot_id, sequence: bot_action.sequence).take
-                    Прикрепленная новость:
-                    = Post.where(intent: bot_action.intent, bot_id: bot_action.bot_id, sequence: bot_action.sequence).take.title
-                    = Post.where(intent: bot_action.intent, bot_id: bot_action.bot_id, sequence: bot_action.sequence).take.body
-                    = link_to "Ссылка", Post.where(intent: bot_action.intent, bot_id: bot_action.bot_id, sequence: bot_action.sequence).take.link
-                    .image
-                      = image_tag(Post.where(intent: bot_action.intent, bot_id: bot_action.bot_id, sequence: bot_action.sequence).take.photo, class: "image")
-                 
-                  - if Check.where(intent: bot_action.intent, bot_id: bot_action.bot_id, sequence: bot_action.sequence).take
-                    - Check.where(intent: bot_action.intent, bot_id: bot_action.bot_id, sequence: bot_action.sequence).each do |check| 
-                      = form_for Entity.new, url: entities_create_check_entity_path, remote: true do |f|
-                        = f.hidden_field :bot_id, value: @bot.id
-                        = f.hidden_field :name, value: check.name
-                        = f.hidden_field :intent, value: check.intent
-                        = f.submit check.name, class: 'btn btn-sm', id: 'btn-chat'
+	.row
+		.col-md-5
+			.panel.panel-primary
+				.panel-body
+					%ul.chat
+						- if latest_bot_actions.length < 1 
+							/ = link_to "Greet #{@bot.name + "Bot"}", bot_actions_greeting_path(:bot_id => @bot.id), method: :post
+							= form_for BotAction.new, url: bot_actions_process_user_input_path, remote: true do |f|
+								.input-group
+									- if @bot
+										= f.hidden_field :bot_id, value: @bot.id
+										= f.hidden_field :intent, value: "start_talk_intent"
+										= f.hidden_field :user_input, value: "Hey, #{@bot.name}Bot!"
+										= f.hidden_field :sequence, value: 1
+										= f.hidden_field :waiting_response, value: true
+									%span.input-group-btn
+										= f.submit "Greet #{@bot.name + "Bot"}", class: 'btn btn-sm', id: 'btn-chat'
+						
+						-else
+							- latest_bot_actions.each do |bot_action|
+								.chat-body.clearfix
+									.header
+										%strong.primary-font Me
+										%small.pull-right.text-muted
+											%span.glyphicon.glyphicon-time
+											#{time_ago_in_words(bot_action.created_at)} ago
+									%p= bot_action.user_input
+								.chat-body.clearfix
+									.header
+										%small.text-muted
+											%span.glyphicon.glyphicon-time
+											#{time_ago_in_words(bot_action.updated_at)} ago
+										%strong.pull-right.primary-font Bot
+									%p= bot_action.bot_response
+									// this should be taken to som json partial
+									
+									- if Post.where(intent: bot_action.intent, bot_id: bot_action.bot_id, sequence: bot_action.sequence).length >= 1
+										
+										/ Прикрепленные новости:
+										// Проверка на то, соответствует ли пост выбранным ранее интересам пользователям
+										- Post.where(intent: bot_action.intent, bot_id: bot_action.bot_id, sequence: bot_action.sequence).each do |post|
+										
+											- if current_user.filter_for_user(post)
+												= post.title
+												= post.body
+												= link_to "Ссылка", post.link
+												.image
+													= image_tag(post.photo, class: "image")
 
-  
+								 
+									- if Check.where(intent: bot_action.intent, bot_id: bot_action.bot_id, sequence: bot_action.sequence).take
+										- Check.where(intent: bot_action.intent, bot_id: bot_action.bot_id, sequence: bot_action.sequence).each do |check| 
+											= form_for Entity.new, url: entities_create_check_entity_path, remote: true do |f|
+												= f.hidden_field :bot_id, value: @bot.id
+												= f.hidden_field :name, value: check.name
+												= f.hidden_field :intent, value: check.intent
+												= f.submit check.name, class: 'btn btn-sm', id: 'btn-chat'
 
-                    = form_for BotAction.new, url: bot_actions_process_user_input_path, remote: true do |f|
-                      .input-group
-                        - if @bot
-                          = f.hidden_field :bot_id, value: @bot.id
-                          = f.hidden_field :intent, value: bot_action.intent
-                          = f.hidden_field :sequence, value: 2
-                          = f.hidden_field :user_input, value: "Done"
-                        %span.input-group-btn
-                          = f.submit "Done", class: 'btn btn-sm', id: 'btn-chat'
+	
 
-                  - if Key.where(intent: bot_action.intent, bot_id: bot_action.bot_id, sequence: bot_action.sequence).take
-                    - Key.where(intent: bot_action.intent, bot_id: bot_action.bot_id, sequence: bot_action.sequence).each do |key| 
-                      = form_for Entity.new, url: entities_create_check_entity_path, remote: true do |f|
-                        = f.hidden_field :bot_id, value: key.bot_id
-                        = f.hidden_field :intent, value: key.intent
-                        = f.hidden_field :key, value: key.name
-                        = f.text_field :name
-                        = f.submit "OK", class: 'btn btn-sm', id: 'btn-chat'
+										= form_for BotAction.new, url: bot_actions_process_user_input_path, remote: true do |f|
+											.input-group
+												- if @bot
+													= f.hidden_field :bot_id, value: @bot.id
+													= f.hidden_field :intent, value: bot_action.intent
+													= f.hidden_field :sequence, value: 2
+													= f.hidden_field :user_input, value: "Done"
+												%span.input-group-btn
+													= f.submit "Done", class: 'btn btn-sm', id: 'btn-chat'
 
-                    = form_for BotAction.new, url: bot_actions_process_user_input_path, remote: true do |f|
-                      .input-group
-                        = f.hidden_field :bot_id, value: bot_action.bot_id
-                        = f.hidden_field :intent, value: bot_action.intent
-                        = f.hidden_field :sequence, value: 2
-                        = f.hidden_field :user_input, value: "Done"
-                      %span.input-group-btn
-                        = f.submit "Done", class: 'btn btn-sm', id: 'btn-chat'
+									
+									- if Key.where(intent: bot_action.intent, bot_id: bot_action.bot_id, sequence: bot_action.sequence).take
+										- Key.where(intent: bot_action.intent, bot_id: bot_action.bot_id, sequence: bot_action.sequence).each do |key| 
+											= form_for Entity.new, url: entities_create_check_entity_path, remote: true do |f|
+												= f.hidden_field :bot_id, value: key.bot_id
+												= f.hidden_field :intent, value: key.intent
+												= f.hidden_field :key, value: key.name
+												= f.text_field :name
+												= f.submit "OK", class: 'btn btn-sm', id: 'btn-chat'
+
+										= form_for BotAction.new, url: bot_actions_process_user_input_path, remote: true do |f|
+											.input-group
+												= f.hidden_field :bot_id, value: bot_action.bot_id
+												= f.hidden_field :intent, value: bot_action.intent
+												= f.hidden_field :sequence, value: 2
+												= f.hidden_field :user_input, value: "Done"
+											%span.input-group-btn
+												= f.submit "Done", class: 'btn btn-sm', id: 'btn-chat'
 
 
 
 
-                
-        .panel-footer
-          = form_for bot_action, url: bot_actions_process_user_input_path, remote: true do |f|
-            .input-group
-              = f.text_field :user_input, autocomplete: 'off', class: 'form-control input-sm', id: 'btn-input', placeholder: 'Type your message here...'
-              = f.hidden_field :bot_id
-              - if @bot
-                = f.hidden_field :bot_id, value: @bot.id
+								
+				.panel-footer
+					= form_for bot_action, url: bot_actions_process_user_input_path, remote: true do |f|
+						.input-group
+							= f.text_field :user_input, autocomplete: 'off', class: 'form-control input-sm', id: 'btn-input', placeholder: 'Type your message here...'
+							= f.hidden_field :bot_id
+							- if @bot
+								= f.hidden_field :bot_id, value: @bot.id
 
-              %span.input-group-btn
-                = f.submit 'send', class: 'btn btn-sm', id: 'btn-chat'
+							%span.input-group-btn
+								= f.submit 'send', class: 'btn btn-sm', id: 'btn-chat'

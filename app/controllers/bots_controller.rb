@@ -10,34 +10,30 @@ class BotsController < ApplicationController
   # GET /bots/1
   # GET /bots/1.json
   def show
-    #intent = talk category when user shoots first
-    @user_intent = Lesson.new
-    #intent = talk category when bot starts the talk
-    @bot_intent = Lesson.new
-    #intent = talk category
-    @lesson = Lesson.new
-    #user_input
-    @user_say = UserSay.new
-    #bot reaction
-    @act = Act.new
+    # #intent = talk category when user shoots first
+    # @user_intent = Lesson.new
+    # #intent = talk category when bot starts the talk
+    # @bot_intent = Lesson.new
+    # #intent = talk category
+    # @lesson = Lesson.new
+    # #user_input
+    # @user_say = UserSay.new
+    # #bot reaction
+    # @act = Act.new
     
-    #media attached to act
-    @post = Post.new
-    @photo = Post.new
-    @link = Post.new
-    @video = Post.new
-    @schedule = Schedule.new
-    @event = Event.new
+    # #media attached to act
+    # @post = Post.new
+    # @photo = Post.new
+    # @link = Post.new
+    # @video = Post.new
+    # @schedule = Schedule.new
+    # @event = Event.new
 
-    @sample = Sample.new
+    # @sample = Sample.new
     @bot_intents = @bot.lessons.where(user_proactive: false)
     @user_intents = @bot.lessons.where(user_proactive: true)
     @latest_bot_actions = @bot.bot_actions.last(5)
-        # if @latest_bot_actions.length < 1
-        #  @latest_bot_actions << BotAction.greeting(current_user.id)
-        #  #current_user.bot_actions.create(bot_response: "Привет! Меня зовут Хлои. Показать тебе интересные события рядом?", created_at: Time.now)
-        # end
-    # render json: @bot, include: [:lessons, :acts], test: @user_intents, status: :ok
+  
   end
 
   def clean_chat

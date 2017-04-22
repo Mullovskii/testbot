@@ -63,10 +63,12 @@ def process_input(user_input)
   #self.update_attribute(:bot_response, result.max_class.to_s) 
   self.update_attribute(:intent, result.max_class)  
   if Act.where(bot_id: self.bot_id, intent: result.max_class.to_s).length >=1
-    self.update_attribute(:bot_response, Act.where(bot_id: self.bot_id, intent: result.max_class.to_s).sample.bot_say) 
+    self.update(bot_response: Act.where(bot_id: self.bot_id, intent: result.max_class.to_s, sequence: 1).sample.bot_say, sequence: 1) 
+    # self.update_attribute(:bot_response, Act.where(bot_id: self.bot_id, intent: result.max_class.to_s, sequence: 1).sample.bot_say) 
+
   else
     self.update_attribute(:bot_response, "Похоже бот не знает что ответить")
-    self.destroy
+    # self.destroy
   end
 
   if Lesson.where(bot_id: self.bot_id, intent: self.intent, extract_data: true).length >= 1

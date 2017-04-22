@@ -125,6 +125,7 @@ ActiveRecord::Schema.define(version: 20170416102212) do
     t.integer  "bot_id"
     t.integer  "lesson_id"
     t.string   "intent"
+    t.string   "filter"
     t.integer  "sequence"
     t.boolean  "waiting_response"
     t.string   "title"

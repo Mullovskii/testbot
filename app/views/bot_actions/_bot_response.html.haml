@@ -5,13 +5,22 @@
 			#{time_ago_in_words(bot_action.updated_at)} ago
 		%strong.pull-right.primary-font Bot
 	%p= return_bot_response
+	
 	- if Post.where(intent: bot_action.intent, bot_id: bot_action.bot_id, sequence: bot_action.sequence).length >= 1
-		Прикрепленная новость:
-		= Post.where(intent: bot_action.intent, bot_id: bot_action.bot_id, sequence: bot_action.sequence).take.title
-		= Post.where(intent: bot_action.intent, bot_id: bot_action.bot_id, sequence: bot_action.sequence).take.body
-		= link_to "Ссылка", Post.where(intent: bot_action.intent, bot_id: bot_action.bot_id, sequence: bot_action.sequence).take.link
-		.image
-			= image_tag(Post.where(intent: bot_action.intent, bot_id: bot_action.bot_id, sequence: bot_action.sequence).take.photo, class: "image")
+		
+		/ Прикрепленные новости #{Post.where(intent: bot_action.intent, bot_id: bot_action.bot_id, sequence: bot_action.sequence).length}:
+		// Проверка на то, соответствует ли пост выбранным ранее интересам пользователям
+		
+		- Post.where(intent: bot_action.intent, bot_id: bot_action.bot_id, sequence: bot_action.sequence).each do |post|
+			- if current_user.filter_for_user(post)
+				= post.title
+				= post.body
+				= link_to "Ссылка", post.link
+				.image
+					= image_tag(post.photo, class: "image")
+
+	
+
 	- if Check.where(intent: bot_action.intent, bot_id: bot_action.bot_id, sequence: bot_action.sequence).take
 		- Check.where(intent: bot_action.intent, bot_id: bot_action.bot_id, sequence: bot_action.sequence).each do |check| 
 			= form_for Entity.new, url: entities_create_check_entity_path, remote: true do |f|

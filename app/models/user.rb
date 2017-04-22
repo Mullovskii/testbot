@@ -11,4 +11,26 @@ class User < ApplicationRecord
     has_many :user_says
     has_many :acts
     has_many :entities
+
+
+  # Проверка на то, соответствует ли пост выбранным интересам пользователям
+  def filter_for_user(post)
+    if post.filter.nil?
+      return true
+    else
+      if self.entities.length >=1
+      self.entities.each do |entity|
+        if post.filter == entity.name
+          return true
+        else
+          return false
+        end
+      end
+      else
+        false
+      end
+    end
+  end
+
+
 end

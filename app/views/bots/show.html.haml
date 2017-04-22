@@ -1,5 +1,7 @@
+
 - if current_user.present?
-  = BotAction.destroy_all
+  / = BotAction.destroy_all
+  / = Entity.destroy_all
   .col-xs-0
     = render 'layouts/chat_bot', bot_action: @bot_action, latest_bot_actions: @latest_bot_actions
 
@@ -10,6 +12,13 @@
 = link_to 'Edit', edit_bot_path(@bot)
 \|
 = link_to 'Back', bots_path
+/ - current_user.entities.each do |e|
+/   = e.name == Post.last.filter
+
+/ - @b = BotAction.last
+/ = BotAction.last.inspect
+/ = Act.where(bot_id: @b.bot_id, intent: @b.intent, sequence: @b.sequence).take
+/ = Act.last.inspect
 
 %p
   %b By:
@@ -17,8 +26,8 @@
 %h1
   %b Bot:
   = @bot.name
-  = Entity.last.inspect
-  = Key.last.inspect
+  / = Entity.last.inspect
+  / = Key.last.inspect
 %h3
   - if current_user.subscriptions.where(bot_id: @bot.id).take
     = link_to "Отписаться", subscription_path(current_user.subscriptions.where(bot_id: @bot.id).take), method: :delete
@@ -50,7 +59,7 @@
       %li= act.bot_say
       = link_to 'Destroy',  act,  method: :delete, data: { confirm: 'Are you sure?' } 
   
-  = form_for @act do |f|
+  = form_for Act.new do |f|
     .field
       = f.label "Бот отвечает"
       = f.text_field :bot_say
@@ -63,47 +72,45 @@
   / attached media
   %h5 Прикрепить к ответу:
   .col-md-12
-    %h6 Post:
-    - if @bot.lessons.where(intent: "start_talk_intent").take.posts.length < 1 
-      = form_for @post do |f|
-        .field  
-          = f.hidden_field :bot_id, value: @bot.id
-          = f.hidden_field :sequence, value: 1
-          = f.hidden_field :lesson_id, value: @bot.lessons.where(intent: "start_talk_intent").take.id
-          = f.hidden_field :intent, value: "start_talk_intent"
-          = f.label :title
-          = f.text_field :title            
-          = f.label :body
-          = f.text_area :body
-          = f.label :link
-          = f.text_field :link
-          = f.label :photo
-          = f.text_field :photo
-        .actions
-          = f.submit 'Save'
+    %h4 Медиа:
+
+    - if @bot.lessons.where(intent: "start_talk_intent").take.posts.length >= 1 
+      - @bot.lessons.where(intent: "start_talk_intent").take.posts.each do |post|
+        = post.title
+        = post.body
+        = post.filter
+        = link_to "X", post_path(post), method: :delete
+
+    = form_for Post.new do |f|
+      .field  
+        = f.hidden_field :bot_id, value: @bot.id
+        = f.hidden_field :sequence, value: 1
+        = f.hidden_field :lesson_id, value: @bot.lessons.where(intent: "start_talk_intent").take.id
+        = f.hidden_field :intent, value: "start_talk_intent"
+        = f.label :title
+        = f.text_field :title            
+        = f.label :body
+        = f.text_area :body
+        = f.label :link
+        = f.text_field :link
+        = f.label :photo
+        = f.text_field :photo
+
+        %b Присвойте посту фильтр-категорию, соответствующую данным, выбранным пользователем из чек-листов. Н-р, если пользователь ранее выбирал интерес "музыка", то, присвоив посту фильтр "музыка", пост будет показываться только пользователям со схожим интересом:
+        = f.label :filter
+        = f.text_field :filter 
+        - if Check.where(bot_id: @bot.id).length >= 1
+          %b Фильтры вашего бота:
+          - Check.where(bot_id: @bot.id).each do |filter| 
+            = filter.name 
+      .actions
+        = f.submit 'Save'
     
-    - else 
-      = form_for @bot.lessons.where(intent: "start_talk_intent").take.posts.take do |f|
-        .field  
-          = f.hidden_field :bot_id, value: @bot.id
-          = f.hidden_field :lesson_id, value: @bot.lessons.where(intent: "start_talk_intent").take.id
-          = f.hidden_field :intent, value: "start_talk_intent"
-          = f.hidden_field :sequence, value: 1
-          = f.label :title
-          = f.text_field :title            
-          = f.label :body
-          = f.text_area :body
-          = f.label :link
-          = f.text_field :link
-          = f.label :photo
-          = f.text_field :photo
-        .actions
-          = f.submit 'Save'
-      =link_to "X", post_path(lesson.posts.take), method: :delete
+   
   
   .col-md-12
 
-    %h6 CheckBox:
+    %h4 CheckBox:
     - if @bot.lessons.where(intent: "start_talk_intent").take.checks.length >= 1
       - @bot.lessons.where(intent: "start_talk_intent").take.checks.each do |check|
         = check.name
@@ -121,6 +128,7 @@
       .actions
         = f.submit '+'   
 
+
     - if @bot.lessons.where(intent: "start_talk_intent").take.checks.length >= 1
       .row
         Когда пользователь завершит выбор, кликнув "Done" 
@@ -131,7 +139,7 @@
               %li= act.bot_say
               = link_to 'Destroy',  act,  method: :delete, data: { confirm: 'Are you sure?' } 
       
-      = form_for @act do |f|
+      = form_for Act.new do |f|
         .field
           = f.label "Бот отреагирует"
           = f.text_field :bot_say
@@ -141,7 +149,7 @@
           = f.hidden_field :lesson_id, value: @bot.lessons.where(intent: "start_talk_intent").take.id
           = f.submit '+'  
 
-    %h6 Данные от пользователя:
+    %h4 Данные от пользователя:
     %p Присвой имя данным, которые ты планируешь принять от пользователя. После используй "@имя данных" (н-р, @адрес) где угодно в других диалогах:
     - if Key.where(bot_id: @bot.id, intent: "start_talk_intent", sequence: 1).take
       - Key.where(bot_id: @bot.id, intent: "start_talk_intent", sequence: 1).each do |key|
@@ -171,7 +179,7 @@
               %li= act.bot_say
               = link_to 'Destroy',  act,  method: :delete, data: { confirm: 'Are you sure?' } 
       
-      = form_for @act do |f|
+      = form_for Act.new do |f|
         .field
           = f.label "Бот отреагирует"
           = f.text_field :bot_say
@@ -188,7 +196,7 @@
 %h2
   + user intent
 
-= form_for @user_intent do |f|
+= form_for Lesson.new do |f|
   / = f.label "+ user intent"
   = f.text_field :intent
   = f.hidden_field :bot_id, value: @bot.id
@@ -213,7 +221,7 @@
 
             = link_to 'Destroy', user_say,  method: :delete, data: { confirm: 'Are you sure?' } 
         
-        = form_for @user_say do |f|
+        = form_for UserSay.new do |f|
           .field
             = f.label "Пользователь говорит"
             = f.text_field :input
@@ -226,31 +234,34 @@
 
       .col-md-6
         
-        %h4 Бот отвечат
+        %h4 Бот отвечает
         %ul
-          - lesson.acts.each do |act|
+          - lesson.acts.where(sequence: 1).each do |act|
             %li= act.bot_say
             = link_to 'Destroy',  act,  method: :delete, data: { confirm: 'Are you sure?' } 
         
-        = form_for @act do |f|
+        = form_for Act.new do |f|
           .field
             = f.label "Бот отвечает"
             = f.text_field :bot_say
             = f.hidden_field :intent, value: lesson.intent
+            = f.hidden_field :sequence, value: 1
             = f.hidden_field :bot_id, value: @bot.id
             = f.hidden_field :lesson_id, value: lesson.id
             = f.submit '+'
         
         / attached media
         %h5 Прикрепить к ответу:
+    
         .col-md-12
           %h6 Post:
           - if lesson.posts.length < 1 
-            = form_for @post do |f|
+            = form_for Post.new do |f|
               .field  
                 = f.hidden_field :bot_id, value: @bot.id
                 = f.hidden_field :lesson_id, value: lesson.id
                 = f.hidden_field :intent, value: lesson.intent
+                = f.hidden_field :sequence, value: 1
                 = f.label :title
                 = f.text_field :title            
                 = f.label :body
@@ -267,6 +278,7 @@
                 = f.hidden_field :bot_id, value: @bot.id
                 = f.hidden_field :lesson_id, value: lesson.id
                 = f.hidden_field :intent, value: lesson.intent
+                = f.hidden_field :sequence, value: 1
                 = f.label :title
                 = f.text_field :title            
                 = f.label :body
@@ -278,33 +290,90 @@
               .actions
                 = f.submit 'Save'
             =link_to "X", post_path(lesson.posts.take), method: :delete
+
         .col-md-12
 
           %h6 CheckBox:
-          - if lesson.checks.length >= 1
+          - if lesson.checks.where(sequence: 1).length >= 1
             - lesson.checks.each do |check|
               = check.name
               =link_to "X", check_path(check), method: :delete
+          
           = form_for Check.new do |f|
             .field  
               = f.hidden_field :bot_id, value: @bot.id
               = f.hidden_field :lesson_id, value: lesson.id
+              = f.hidden_field :sequence, value: 1
               = f.hidden_field :intent, value: lesson.intent
               = f.label :name
               = f.text_field :name    
             .actions
-              = f.submit '+'        
+              = f.submit '+'    
+          - if lesson.checks.where(sequence: 1).length >= 1  
+            .row
+              Когда пользователь завершит выбор, кликнув "Done" 
+              .col-md-6
+                %h4 Бот отреагирует:
+                %ul
+                  - lesson.acts.where(sequence: 2).each do |act|
+                    %li= act.bot_say
+                    = link_to 'Destroy',  act,  method: :delete, data: { confirm: 'Are you sure?' }   
+            
+            = form_for Act.new do |f|
+              .field
+                = f.label "Бот отреагирует"
+                = f.text_field :bot_say
+                = f.hidden_field :intent, value: lesson.intent
+                = f.hidden_field :bot_id, value: @bot.id
+                = f.hidden_field :sequence, value: 2
+                = f.hidden_field :lesson_id, value: lesson.id
+                = f.submit '+'  
 
+          %h6 Данные от пользователя:
+          %p Присвой имя данным, которые ты планируешь принять от пользователя. После используй "@имя данных" (н-р, @адрес) где угодно в других диалогах:
+          - if Key.where(bot_id: @bot.id, intent: lesson.intent, sequence: 1).take
+            - Key.where(bot_id: @bot.id, intent: lesson.intent, sequence: 1).each do |key|
+              = key.name
+              =link_to "X", key_path(key), method: :delete
 
-
-
-
+          = form_for Key.new do |f|
+            .field  
+              = f.hidden_field :bot_id, value: @bot.id
+              / = f.hidden_field :user_id, value: current_user.id
+              = f.hidden_field :intent, value: lesson.intent
+              = f.hidden_field :sequence, value: 1
+              / = f.hidden_field :user_say_id, value: nil
+              = f.hidden_field :lesson_id, value: lesson.id
+              = f.label "имя данных:"
+              = f.text_field :name    
+            .actions
+              = f.submit '+'
+          
+          - if lesson.keys.length >= 1
+            .row
+              Когда пользователь завершит выбор, кликнув "Done" 
+              .col-md-6
+                %h4 Бот отреагирует:
+                %ul
+                  - lesson.acts.where(sequence: 2).each do |act|
+                    %li= act.bot_say
+                    = link_to 'Destroy',  act,  method: :delete, data: { confirm: 'Are you sure?' } 
+            
+            = form_for Act.new do |f|
+              .field
+                = f.label "Бот отреагирует"
+                = f.text_field :bot_say
+                = f.hidden_field :intent, value: lesson.intent
+                = f.hidden_field :bot_id, value: @bot.id
+                = f.hidden_field :sequence, value: 2
+                = f.hidden_field :lesson_id, value: lesson.id
+                = f.submit '+'   
 
 .row
 %h2
   + bot intent
 
-= form_for @bot_intent do |f|
+= form_for Lesson.new do |f|
   = f.text_field :intent
   = f.hidden_field :bot_id, value: @bot.id
   = f.hidden_field :user_proactive, value: false
@@ -323,16 +392,17 @@
         
         %h4 Бот говорит первый
         %ul
-          - lesson.acts.where(proactive: true).each do |act|
+          - lesson.acts.where(proactive: true, sequence: 0).each do |act|
             %li= act.bot_say
             = link_to 'Destroy',  act,  method: :delete, data: { confirm: 'Are you sure?' } 
         
-        = form_for @act do |f|
+        = form_for Act.new do |f|
           .field
             = f.label "Бот говорит"
             = f.text_field :bot_say
             = f.hidden_field :intent, value: lesson.intent + "_act_first"
             = f.hidden_field :bot_id, value: @bot.id
+            = f.hidden_field :sequence, value: 0
             = f.hidden_field :lesson_id, value: lesson.id
             = f.hidden_field :proactive, value: true
             = f.submit '+'
@@ -347,6 +417,7 @@
                 = f.hidden_field :lesson_id, value: lesson.id
                 = f.hidden_field :intent, value: lesson.intent
                 = f.hidden_field :proactive, value: true
+                = f.hidden_field :sequence, value: 0
                 = f.label :title
                 = f.text_field :title            
                 = f.label :body
@@ -363,6 +434,7 @@
                 = f.hidden_field :bot_id, value: @bot.id
                 = f.hidden_field :lesson_id, value: lesson.id
                 = f.hidden_field :intent, value: lesson.intent
+                = f.hidden_field :sequence, value: 0
                 = f.label :title
                 = f.text_field :title            
                 = f.label :body
@@ -377,7 +449,7 @@
         .row
           %h6 Время
           - if lesson.schedules.length < 1
-            = form_for @schedule do |f|
+            = form_for Schedule.new do |f|
               .field
                 = f.hidden_field :bot_id, value: @bot.id
                 = f.hidden_field :lesson_id, value: lesson.id
@@ -468,7 +540,7 @@
             / %li= user_say.regexp
             = link_to 'Destroy',  user_say,  method: :delete, data: { confirm: 'Are you sure?' } 
         
-        = form_for @user_say do |f|
+        = form_for UserSay.new do |f|
           .field
             = f.label "Пользователь отвечает"
             Если вы хотите сохранить данные пользователя, то в тренировочных ответах пользователя укажите @переменную и поставьте галочку "сохранить данные от пользователя". Н-р: "Меня зовут @имя", "Я @имя". Бот будет понимать, что вместо переменной @имя будет имя пользователя, которое нужно сохранить. После вы можете использовать переменную @имя в ответах бота.
@@ -480,12 +552,14 @@
             = f.hidden_field :bot_id, value: @bot.id
             = f.hidden_field :lesson_id, value: lesson.id
             = f.submit '+'
+        
         - if lesson.keys.length >= 1
           - lesson.keys.each do |key|
             = key.name + ":"
             - key.samples.each do |sample|
               = sample.name
-            = form_for @sample do |f|
+
+            = form_for Sample.new do |f|
               .field
                 = f.label "Многочисленные примеры #{key.name}"
                 = f.hidden_field :user_say_id, value: key.user_say_id
@@ -501,16 +575,17 @@
         
         %h4 Бот реагирует на ответ
         %ul
-          - lesson.acts.where(proactive: false).each do |act|
+          - lesson.acts.where(proactive: false, sequence: 1).each do |act|
             %li= act.bot_say
             / %li= act.intent
             = link_to 'Destroy',  act,  method: :delete, data: { confirm: 'Are you sure?' } 
         
-        = form_for @act do |f|
+        = form_for Act.new do |f|
           .field
             = f.label "Бот реагирует на ответ"
             = f.text_field :bot_say
             = f.hidden_field :intent, value: lesson.intent
+            = f.hidden_field :sequence, value: 1
             = f.hidden_field :bot_id, value: @bot.id
             = f.hidden_field :lesson_id, value: lesson.id
             = f.submit '+'
@@ -519,11 +594,12 @@
         .col-md-2
           %h6 Post
           - if lesson.posts.where(proactive: false).length < 1 
-            = form_for @post do |f|
+            = form_for Post.new do |f|
               .field  
                 = f.hidden_field :bot_id, value: @bot.id
                 = f.hidden_field :lesson_id, value: lesson.id
                 = f.hidden_field :intent, value: lesson.intent
+                = f.hidden_field :sequence, value: 1
                 = f.label :title
                 = f.text_field :title            
                 = f.label :body
@@ -536,11 +612,12 @@
                 = f.submit 'Save'
           
           - else 
-            = form_for lesson.posts.where(proactive: false).take do |f|
+            = form_for Post.new do |f|
               .field  
                 = f.hidden_field :bot_id, value: @bot.id
                 = f.hidden_field :lesson_id, value: lesson.id
                 = f.hidden_field :intent, value: lesson.intent
+                = f.hidden_field :sequence, value: 1
                 = f.label :title
                 = f.text_field :title            
                 = f.label :body
