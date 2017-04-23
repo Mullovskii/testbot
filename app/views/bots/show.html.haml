@@ -299,8 +299,8 @@
     
         .col-md-12
           %h4 Медиа:
-          - if lesson.posts.where(sequence: 1).length >= 1 
-            - lesson.posts.where(sequence: 1).each do |post|
+          - if lesson.posts.where(sequence: 1, rss: false).length >= 1 
+            - lesson.posts.where(sequence: 1, rss: false).each do |post|
               = post.title
               = post.body
               = post.filter
@@ -331,6 +331,39 @@
 
             .actions
               = f.submit 'Save'
+
+
+
+        .col-md-12
+          %h4 RSS:
+          %p 10 свежих новостей с внешнего ресурса:
+
+          - if lesson.posts.where(sequence: 1, rss: true).length >= 1  
+            - lesson.posts.where(sequence: 1, rss: true).each do |post|
+              = post.link
+              = link_to "X", post_path(post), method: :delete
+
+          = form_for Post.new do |f|
+            .field  
+              = f.hidden_field :rss, value: true
+              = f.hidden_field :bot_id, value: @bot.id
+              = f.hidden_field :sequence, value: 1
+              = f.hidden_field :lesson_id, value: lesson.id
+              = f.hidden_field :intent, value: lesson.intent
+              
+              = f.label :link
+              = f.text_field :link
+
+              %b Присвойте RSS фильтр-категорию, соответствующую данным, выбранным пользователем из чек-листов. Н-р, если пользователь ранее выбирал интерес "музыка", то, присвоив посту фильтр "музыка", RSS будет показываться только пользователям со схожим интересом:
+              = f.label :filter
+              = f.text_field :filter 
+              - if Check.where(bot_id: @bot.id).length >= 1
+                %b Фильтры вашего бота:
+                - Check.where(bot_id: @bot.id).each do |filter| 
+                  = filter.name 
+            .actions
+              = f.submit 'Save'
+
           
 
         .col-md-12
@@ -450,9 +483,9 @@
 
         %h5 Прикрепить к ответу:
         .row
-          %h6 Медиа
-          - if lesson.posts.where(proactive: true, sequence: 0).length >= 1
-            - lesson.posts.where(proactive: true, sequence: 0).each do |post|
+          %h4 Пост:
+          - if lesson.posts.where(proactive: true, sequence: 0, rss: false).length >= 1
+            - lesson.posts.where(proactive: true, sequence: 0, rss: false).each do |post|
               = post.title
               = post.body
               = post.filter
@@ -483,7 +516,40 @@
                   = filter.name 
             .actions
               = f.submit 'Save'
-          
+
+        .row
+          %h4 RSS:
+          %p 10 свежих новостей с внешнего ресурса:
+
+          - if lesson.posts.where(sequence: 0, rss: true).length >= 1  
+            - lesson.posts.where(sequence: 0, rss: true).each do |post|
+              = post.link
+              = link_to "X", post_path(post), method: :delete
+
+          = form_for Post.new do |f|
+            .field  
+              = f.hidden_field :rss, value: true
+              = f.hidden_field :bot_id, value: @bot.id
+              = f.hidden_field :sequence, value: 0
+              = f.hidden_field :lesson_id, value: lesson.id
+              = f.hidden_field :intent, value: lesson.intent
+              
+              = f.label :link
+              = f.text_field :link
+
+              %b Присвойте RSS фильтр-категорию, соответствующую данным, выбранным пользователем из чек-листов. Н-р, если пользователь ранее выбирал интерес "музыка", то, присвоив посту фильтр "музыка", RSS будет показываться только пользователям со схожим интересом:
+              = f.label :filter
+              = f.text_field :filter 
+              - if Check.where(bot_id: @bot.id).length >= 1
+                %b Фильтры вашего бота:
+                - Check.where(bot_id: @bot.id).each do |filter| 
+                  = filter.name 
+            .actions
+              = f.submit 'Save'
+        
+
+
+
          
         .row
           %h6 Время
