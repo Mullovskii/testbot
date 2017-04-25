@@ -8,27 +8,7 @@ Rails.application.routes.draw do
   resources :keys
   resources :entities
   resources :samples
-  namespace :api, defaults: {format: 'json'} do
-    scope module: :v1, constraints: ApiConstraints.new(version: 1, default: true) do
-      post 'bot_actions/process_user_input'
-      resources :events
-      resources :schedules
-      resources :posts
-      resources :entities
-      resources :user_says
-      resources :acts
-      resources :lessons
-      resources :bots
-      devise_for :users
-      mount ResqueWeb::Engine => "/resque_web"
-    end
-    # scope module: :v2, constraints: ApiConstraints.new(version: 2, default: true) do
-    #   resources :products
-    # end
-  end
-
-
-  resources :events
+  # resources :events
   resources :schedules
   resources :posts
   resources :user_says
@@ -38,13 +18,34 @@ Rails.application.routes.draw do
   post 'bot_actions/process_user_input'
   post 'bot_actions/greeting'
   post 'entities/create_check_entity'
-  
-
   mount ResqueWeb::Engine => "/resque_web"
-
-
-  
   devise_for :users
   root to: 'home#index'
-  # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
+  
+  # API
+  namespace :api, defaults: {format: 'json'} do
+    scope module: :v1, constraints: ApiConstraints.new(version: 1, default: true) do
+      resources :bots do
+        member do
+          get :subscriptions
+          get :lessons
+        end
+      end
+      post 'bot_actions/process_user_input'
+      # resources :events
+      resources :subscriptions
+      resources :schedules
+      resources :posts
+      resources :entities
+      resources :user_says
+      resources :acts
+      resources :lessons
+      devise_for :users
+      mount ResqueWeb::Engine => "/resque_web"
+    end
+    # scope module: :v2, constraints: ApiConstraints.new(version: 2, default: true) do
+    #   resources :products
+    # end
+  end
+
 end

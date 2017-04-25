@@ -12,6 +12,7 @@ class Post < ApplicationRecord
 	    Feedjira::Feed.add_common_feed_element 'link'
 	    Feedjira::Feed.add_common_feed_element 'image'
 	    @feed = Feedjira::Feed.fetch_and_parse url
+	    puts @feed.inspect
 	    return @feed.entries.take(10)
   	end
   end

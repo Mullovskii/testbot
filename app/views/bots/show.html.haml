@@ -1,33 +1,24 @@
 
 - if current_user.present?
-  = BotAction.destroy_all
-  / = Entity.destroy_all
+  / = BotAction.destroy_all
+
   .col-xs-0
     = render 'layouts/chat_bot', bot_action: @bot_action, latest_bot_actions: @latest_bot_actions
 
 %p#notice= notice
 
 
-/ = @feed.link
-/ = link_to @feed.entries.first.title, @feed.entries.first.url
-/ = sanitize @feed.entries.first.summary
-/ = sanitize @feed.entries.first.content
-
-
-/ - if @feed.entries.first.image
-/   = image_tag(@feed.entries.first.image, class: "image")
-
-
-
 = link_to 'Edit', edit_bot_path(@bot)
 \|
 = link_to 'Back', bots_path
-/ - current_user.entities.each do |e|
-/   = e.name == Post.last.filter
 
-/ - @b = BotAction.last
-/ = BotAction.last.inspect
-/ = Act.where(bot_id: @b.bot_id, intent: @b.intent, sequence: @b.sequence).take
+
+/ GET /api/bots/:id
+/ render :json => @bot.to_json(:include => [{ :lessons => {:include => [:acts, :posts, :checks, :user_says, :schedules]}},
+/                                                     :checks,
+/                                                     :keys,
+/                                                     :subscriptions])
+
 
 %p
   %b By:
@@ -35,21 +26,20 @@
 %h1
   %b Bot:
   = @bot.name
-  / = Entity.last.inspect
-  / = Key.last.inspect
-
-%h3
-  - if current_user.subscriptions.where(bot_id: @bot.id).take
-    = link_to "Отписаться", subscription_path(current_user.subscriptions.where(bot_id: @bot.id).take), method: :delete
-
-  - else
-    = form_for Subscription.new do |f|
-      .field   
-        = f.hidden_field :bot_id, value: @bot.id
-        = f.hidden_field :user_id, value: current_user.id
-        = f.submit 'Подписаться на бота'  
 
 
+
+/ %h3
+/   - if current_user.subscriptions.where(bot_id: @bot.id).take
+/     = link_to "Отписаться", subscription_path(current_user.subscriptions.where(bot_id: @bot.id).take), method: :delete
+
+
+/   - else
+/     = form_for Subscription.new do |f|
+/       .field   
+/         = f.hidden_field :bot_id, value: @bot.id
+/         = f.hidden_field :user_id, value: current_user.id
+/         = f.submit 'Подписаться на бота'  
 
 
 %p
@@ -67,6 +57,7 @@
 .col-md-6
   %h4 Бот реагирует:
   %ul
+    /api/bots/:id/lessons - возвращает 
     - @bot.lessons.where(intent: "start_talk_intent").take.acts.where(sequence: 1).each do |act|
       %li= act.bot_say
       = link_to 'Destroy',  act,  method: :delete, data: { confirm: 'Are you sure?' } 

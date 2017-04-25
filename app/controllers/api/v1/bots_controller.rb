@@ -2,36 +2,52 @@ module Api
   module V1
     # app/controllers/bots_controller.rb
     class BotsController < ApplicationController
-      before_action :set_bot, only: [:show, :update, :destroy]
+      before_action :set_bot, only: [:show, :update, :destroy, :subscriptions, :lessons]
 
-      # GET /bots
+      # GET /api/bots
       def index
         @bots = Bot.all
         json_response(@bots)
       end
 
-      # POST /bots
+      # POST /api/bots
       def create
         @bot = Bot.create!(bot_params)
         json_response(@bot, :created)
       end
 
-      # GET /bots/:id
+      # GET /api/bots/:id
       def show
-        json_response(@bot)
+        render :json => @bot.to_json(:include => [{ :lessons => {:include => [:acts, :posts, :checks, :user_says, :schedules]}},
+                                                    :checks,
+                                                    :keys,
+                                                    :subscriptions])
       end
 
-      # PUT /bots/:id
+      # PUT /api/bots/:id
       def update
-        @todo.update(bot_params)
+        @bot.update(bot_params)
         head :no_content
       end
 
-      # DELETE /bots/:id
+      # DELETE /api/bots/:id
       def destroy
         @bot.destroy
         head :no_content
       end
+
+
+      # # GET /api/bots/:id/lessons
+      # def lessons
+      #   @bot_lessons = @bot.lessons
+      #   json_response(@bot_lessons)
+      # end
+
+      # # GET /api/bots/:id/subscriptions
+      # def subscriptions
+      #   @subscriptions = @bot.subscriptions
+      #   json_response(@subscriptions)
+      # end
 
       private
 

@@ -31,6 +31,7 @@
 				- post.parse_rss.entries.each do |entry|
 					= link_to entry.title, entry.url
 					= sanitize entry.summary
+					= image_tag(entry.image.to_s, class: 'test')
 
 	
 
