@@ -5,7 +5,7 @@
 				.panel-body
 					%ul.chat
 						- if latest_bot_actions.length < 1 
-							/ = link_to "Greet #{@bot.name + "Bot"}", bot_actions_greeting_path(:bot_id => @bot.id), method: :post
+							/ = link_to "Привет #{@bot.name + "Bot"}", bot_actions_greeting_path(:bot_id => @bot.id), method: :post
 							= form_for BotAction.new, url: bot_actions_process_user_input_path, remote: true do |f|
 								.input-group
 									- if @bot
@@ -33,15 +33,12 @@
 											#{time_ago_in_words(bot_action.updated_at)} ago
 										%strong.pull-right.primary-font Bot
 									%p= bot_action.bot_response
-									// this should be taken to som json partial
-									
 									
 									- if Post.where(intent: bot_action.intent, bot_id: bot_action.bot_id, sequence: bot_action.sequence, rss: false).length >= 1
 										
 										/ Прикрепленные новости:
 										// Проверка на то, соответствует ли пост выбранным ранее интересам пользователям
 										- Post.where(intent: bot_action.intent, bot_id: bot_action.bot_id, sequence: bot_action.sequence, rss: false).each do |post|
-										
 											- if current_user.filter_for_user(post)
 												= post.title
 												= post.body
@@ -51,20 +48,18 @@
 														= image_tag(post.photo, class: "image")
 
 									- if Post.where(intent: bot_action.intent, bot_id: bot_action.bot_id, sequence: bot_action.sequence, rss: true).length >= 1
-										
 										RSS:
 										%br
 										// Проверка на то, соответствует ли RSS выбранным ранее интересам пользователям
 										- Post.where(intent: bot_action.intent, bot_id: bot_action.bot_id, sequence: bot_action.sequence, rss: true).each do |post|
 										
 											- if current_user.filter_for_user(post)
-												- post.parse_rss.entries.each do |entry|
+												- post.parse_rss.each do |entry|
 													= link_to entry.title, entry.url
 													= sanitize entry.summary
-												
-												
-												
-													
+													- if @image
+														= image_tag(entry.image.to_s, class: 'test')
+
 
 								 
 									- if Check.where(intent: bot_action.intent, bot_id: bot_action.bot_id, sequence: bot_action.sequence).take

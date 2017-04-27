@@ -15,11 +15,11 @@ Rails.application.routes.draw do
   resources :acts
   resources :lessons
   resources :bots
+  resources :users
   post 'bot_actions/process_user_input'
-  post 'bot_actions/greeting'
   post 'entities/create_check_entity'
   mount ResqueWeb::Engine => "/resque_web"
-  devise_for :users
+  devise_for :users, :path_prefix => 'my'
   root to: 'home#index'
   
   # API
@@ -27,10 +27,11 @@ Rails.application.routes.draw do
     scope module: :v1, constraints: ApiConstraints.new(version: 1, default: true) do
       resources :bots do
         member do
-          get :subscriptions
-          get :lessons
+          get :all_bot_actions
+          # get :lessons
         end
       end
+      # resources :bots 
       post 'bot_actions/process_user_input'
       # resources :events
       resources :subscriptions
@@ -40,7 +41,8 @@ Rails.application.routes.draw do
       resources :user_says
       resources :acts
       resources :lessons
-      devise_for :users
+      resources :users
+      devise_for :users, :path_prefix => 'my'
       mount ResqueWeb::Engine => "/resque_web"
     end
     # scope module: :v2, constraints: ApiConstraints.new(version: 2, default: true) do

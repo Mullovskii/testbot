@@ -1,6 +1,7 @@
 
 - if current_user.present?
   / = BotAction.destroy_all
+  = BotAction.last.inspect
 
   .col-xs-0
     = render 'layouts/chat_bot', bot_action: @bot_action, latest_bot_actions: @latest_bot_actions
@@ -13,12 +14,8 @@
 = link_to 'Back', bots_path
 
 
+/API
 / GET /api/bots/:id
-/ render :json => @bot.to_json(:include => [{ :lessons => {:include => [:acts, :posts, :checks, :user_says, :schedules]}},
-/                                                     :checks,
-/                                                     :keys,
-/                                                     :subscriptions])
-
 
 %p
   %b By:

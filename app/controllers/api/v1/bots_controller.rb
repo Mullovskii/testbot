@@ -2,7 +2,7 @@ module Api
   module V1
     # app/controllers/bots_controller.rb
     class BotsController < ApplicationController
-      before_action :set_bot, only: [:show, :update, :destroy, :subscriptions, :lessons]
+      before_action :set_bot, only: [:show, :update, :destroy, :all_bot_actions]
 
       # GET /api/bots
       def index
@@ -36,18 +36,13 @@ module Api
         head :no_content
       end
 
-
-      # # GET /api/bots/:id/lessons
-      # def lessons
-      #   @bot_lessons = @bot.lessons
-      #   json_response(@bot_lessons)
-      # end
-
-      # # GET /api/bots/:id/subscriptions
-      # def subscriptions
-      #   @subscriptions = @bot.subscriptions
-      #   json_response(@subscriptions)
-      # end
+      # список всех сообщений бота
+      # GET /api/bots/:id/all_bot_actions
+      def all_bot_actions
+        @all_bot_actions = @bot.bot_actions.where(user_id: nil) + @bot.bot_actions.where(user_id: current_user.id)
+        @all_bot_actions = @all_bot_actions.sort_by &:created_at
+        render :json => @all_bot_actions.to_json
+      end
 
       private
 

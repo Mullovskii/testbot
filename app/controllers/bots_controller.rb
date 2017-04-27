@@ -10,11 +10,9 @@ class BotsController < ApplicationController
   # GET /bots/1
   # GET /bots/1.json
   def show
-    
     @bot_intents = @bot.lessons.where(user_proactive: false)
     @user_intents = @bot.lessons.where(user_proactive: true)
     @latest_bot_actions = @bot.bot_actions.last(5)
-  
   end
 
   def clean_chat

@@ -28,10 +28,11 @@
 		- Post.where(intent: bot_action.intent, bot_id: bot_action.bot_id, sequence: bot_action.sequence, rss: true).each do |post|
 		
 			- if current_user.filter_for_user(post)
-				- post.parse_rss.entries.each do |entry|
+				- post.parse_rss.each do |entry|
 					= link_to entry.title, entry.url
 					= sanitize entry.summary
-					= image_tag(entry.image.to_s, class: 'test')
+					- if @image
+						= image_tag(entry.image.to_s, class: 'test')
 
 	
 

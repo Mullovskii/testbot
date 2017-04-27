@@ -1,6 +1,6 @@
 class BotAction < ApplicationRecord
   include Rails.application.routes.url_helpers
-
+  cattr_accessor :current_user
   belongs_to :user
   belongs_to :bot
   validates_presence_of :user_input, message: "ты хотел что-то сказать"
@@ -168,7 +168,18 @@ end
     #some action triggers
     return false
   end
+
+  
+
+  def filter_for_user?(user=nil)
+    user ||= current_user
+    if self.user_id == current_user.id
+      return self
+    end
+  end
  
+
+
 private
 
 def error_response
