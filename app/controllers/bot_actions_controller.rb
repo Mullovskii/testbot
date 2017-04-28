@@ -12,9 +12,10 @@ class BotActionsController < ApplicationController
   def process_user_input
     @bot_action = current_user.bot_actions.build(bot_action_params)
     if @bot_action.save
+      bot = @bot_action.bot
       unless @bot_action.intent == nil
-        if Act.where(bot_id: @bot_action.bot_id, intent: @bot_action.intent, sequence: @bot_action.sequence).length >=1
-          @bot_action.update(bot_response: Act.where(bot_id: @bot_action.bot_id, intent: @bot_action.intent, sequence: @bot_action.sequence).sample.bot_say) 
+        if bot.acts.where(intent: @bot_action.intent, sequence: @bot_action.sequence).length >=1
+          @bot_action.update(bot_response: bot.acts.where(intent: @bot_action.intent, sequence: @bot_action.sequence).sample.bot_say) 
         else
           @bot_action.update(bot_response: "Похоже бот не знает что ответить") 
         end
@@ -28,13 +29,10 @@ class BotActionsController < ApplicationController
     end
   end
 
-  def filter_for_user
-    
-  end
  
   private
  
   def bot_action_params
-    params.require(:bot_action).permit(:user_input, :user_id, :bot_id, :intent, :bot_response, :sequence, :waiting_response )
+    params.require(:bot_action).permit(:user_input, :user_id, :bot_id, :intent, :bot_response, :sequence, :waiting_response, :lesson_id )
   end
 end

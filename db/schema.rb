@@ -43,6 +43,7 @@ ActiveRecord::Schema.define(version: 20170428182702) do
     t.string   "user_input"
     t.string   "bot_response"
     t.string   "intent"
+    t.integer  "lesson_id"
     t.integer  "sequence"
     t.boolean  "waiting_response"
     t.integer  "user_id"

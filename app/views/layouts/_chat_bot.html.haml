@@ -1,5 +1,6 @@
 / уникальный чат бота и уникального юзера
 /       GET /api/bots/:id/all_bot_actions
+
 .container
 	.row
 		.col-md-5
@@ -12,6 +13,7 @@
 								.input-group
 									- if @bot
 										= f.hidden_field :bot_id, value: @bot.id
+										= f.hidden_field :lesson_id, value: @bot.lessons.where(intent: "start_talk_intent").first.id
 										= f.hidden_field :intent, value: "start_talk_intent"
 										= f.hidden_field :user_input, value: "Привет, #{@bot.name}Bot!"
 										= f.hidden_field :sequence, value: 1

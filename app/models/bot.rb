@@ -9,7 +9,6 @@ class Bot < ApplicationRecord
   has_many :events
   has_many :entities
   has_many :subscriptions
-
   has_many :keys
   has_many :samples
   has_many :checks

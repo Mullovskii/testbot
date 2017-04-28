@@ -8,5 +8,5 @@ class Lesson < ApplicationRecord
   has_many :events
   has_many :checks
   has_many :keys
-  
+  has_many :bot_actions
 end

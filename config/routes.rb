@@ -3,6 +3,14 @@ require 'api_constraints'
 
 Rails.application.routes.draw do
 
+  get 'attachements/create'
+
+  get 'attachements/destroy'
+
+  get 'attachement/create'
+
+  get 'attachement/destroy'
+
   resources :subscriptions
   resources :checks
   resources :keys

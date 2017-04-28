@@ -2,7 +2,7 @@ module Api
   module V1
     # app/controllers/bots_controller.rb
     class BotsController < ApplicationController
-      before_action :set_bot, only: [:show, :update, :destroy, :all_bot_actions]
+      before_action :set_bot, only: [:show, :update, :destroy, :chat]
 
       # GET /api/bots
       def index
@@ -37,11 +37,11 @@ module Api
       end
 
       # уникальный чат бота и уникального юзера
-      # GET /api/bots/:id/all_bot_actions
+      # GET /api/bots/:id/chat
       def chat
-        @all_bot_actions = @bot.bot_actions.where(user_id: nil) + @bot.bot_actions.where(user_id: current_user.id)
-        @all_bot_actions = @all_bot_actions.sort_by &:created_at
-        render :json => @all_bot_actions.to_json
+        @chat = @bot.bot_actions.where(user_id: nil) + @bot.bot_actions.where(user_id: current_user.id)
+        @chat = @chat.sort_by &:created_at
+        render :json => @chat.to_json(:include => [:posts, :checks, :keys])
       end
 
       private

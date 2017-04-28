@@ -1,83 +1,93 @@
 class BotAction < ApplicationRecord
+  
+
   include Rails.application.routes.url_helpers
-  cattr_accessor :current_user
+  
+
   has_many :attachements
   has_many :posts, :through => :attachements, :source => :attachable, :source_type => 'Post'
   has_many :checks, :through => :attachements, :source => :attachable, :source_type => 'Check'
   has_many :keys, :through => :attachements, :source => :attachable, :source_type => 'Key'
-  
-
+  belongs_to :lesson, optional: true
   belongs_to :user
   belongs_to :bot
   validates_presence_of :user_input, message: "ты хотел что-то сказать"
   validates_length_of :user_input, minimum: 2, maximum: 200, message: "accepts only 2 - 200" 
-  # before_save :strip_user_input
-
-#TRAINING_DATA = YAML.load_file('config/chatbot/training.yml') 
-#EVENTS_ARRAY = {"events" => ["да", "ок", "давай", "события", "событие", "ивенты", "ивент", "интересное", "семинары", "семинар", "концерты", "концерт", "уроки", "урок", "лекции", "фильмы", "куда"]}
 
 
 #1
 def process_input(user_input)
   if self.intent.nil?
-
-  user_input_tokens = clean_user_input(user_input)
-  # common_array = user_input_tokens & EVENTS_ARRAY["events"]  #Intersection of both arrays
-  # common_word = common_array.present? ? EVENTS_ARRAY.keys[0] : "classification_failed"
-  # send("#{common_word}_enquiry", user_input_tokens)
-  nbayes = NBayes::Base.new(binarized: true)
-  
-  # если user_say содержит переменные типа @переменная, то поочередно подставляем вместо @переменной Sample-пример переменной, привязанный к @переменной во время тренировки 
-  self.bot.user_says.each do |say|
-    category = say.intent
-    if say.samples.length >= 1
-      say.samples.each do |sample|
-        input = say.input.gsub(/@[\wа-я]+/i).with_index do |m, i| 
-          if sample.key_name == m 
-            sample.name
+    bot = self.bot
+    user_input_tokens = clean_user_input(user_input)
+    nbayes = NBayes::Base.new(binarized: true)
+    # если user_say содержит переменные типа @переменная, то поочередно подставляем вместо @переменной Sample-пример переменной, привязанный к @переменной во время тренировки 
+    bot.user_says.each do |say|
+      category = say.intent
+      if say.samples.length >= 1
+        say.samples.each do |sample|
+          input = say.input.gsub(/@[\wа-я]+/i).with_index do |m, i| 
+            if sample.key_name == m 
+              sample.name
+            end
           end
-        end
+          nbayes.train(input.split(/\s+/), category)
+        end 
+      else
+        input = say.input
         nbayes.train(input.split(/\s+/), category)
-      end 
+      end       
+    end
+    nbayes.assume_uniform = true                           #
+    result = nbayes.classify(user_input_tokens)            #classifying the input form user 
+    #nbayes.dump('config/rembot/dump.yml')                 #dump of trained data, for us to observe how the classification is done
+    result.each do |k, v|
+      puts "\n#{(v * 100)} => #{k}\n"                      #display of classified log probabilities for each category
+    end
+    
+    self.update(intent: result.max_class, lesson_id: bot.lessons.where(intent: result.max_class).first.id) 
+    lesson = self.lesson 
+    
+    if lesson.acts.length >=1
+      self.update(bot_response: lesson.acts.where(sequence: 1).sample.bot_say, sequence: 1) 
+      #проверяем, привзяны ли к диалогу посты / чеклисты / данные от пользователя - если да - 
+      # создаем объект-связь между ними, для последующего использования н-р bot_action.posts
+      if lesson.posts.where(sequence: self.sequence).length >= 1
+        lesson.posts.where(sequence: self.sequence).each do |post|
+          self.attachements.create(attachable_id: post.id, attachable_type: post.class, bot_id: bot.id)
+        end
+      end
+
+      if lesson.checks.where(sequence: self.sequence).length >= 1
+        lesson.checks.where(sequence: self.sequence).each do |check|
+          self.attachements.create(attachable_id: check.id, attachable_type: check.class, bot_id: bot.id)
+        end
+      end
+
+      if lesson.keys.where(sequence: self.sequence).length >= 1
+        lesson.keys.where(sequence: self.sequence).each do |key|
+          self.attachements.create(attachable_id: key.id, attachable_type: key.class, bot_id: bot.id)
+        end
+      end
+
     else
-      input = say.input
-      nbayes.train(input.split(/\s+/), category)
-    end       
-  end
+      self.update_attribute(:bot_response, "Похоже бот не знает что ответить")
+    end
 
-  nbayes.assume_uniform = true                           #
-  result = nbayes.classify(user_input_tokens)            #classifying the input form user 
-  #nbayes.dump('config/rembot/dump.yml')                 #dump of trained data, for us to observe how the classification is done
-  result.each do |k, v|
-    puts "\n#{(v * 100)} => #{k}\n"                      #display of classified log probabilities for each category
-  end
-  #result.max_class
-  #self.update_attribute(:bot_response, result.max_class.to_s) 
-  self.update_attribute(:intent, result.max_class)  
-  if Act.where(bot_id: self.bot_id, intent: result.max_class.to_s).length >=1
-    self.update(bot_response: Act.where(bot_id: self.bot_id, intent: result.max_class.to_s, sequence: 1).sample.bot_say, sequence: 1) 
-    # self.update_attribute(:bot_response, Act.where(bot_id: self.bot_id, intent: result.max_class.to_s, sequence: 1).sample.bot_say) 
-
-  else
-    self.update_attribute(:bot_response, "Похоже бот не знает что ответить")
-    # self.destroy
-  end
-
-  if Lesson.where(bot_id: self.bot_id, intent: self.intent, extract_data: true).length >= 1
-    create_entity
-  end
- 
+    if self.bot.lessons.where(intent: self.intent, extract_data: true).length >= 1
+      create_entity
+    end
   end 
   if self.bot_response.match(/@[\wа-я]+/i)
-    # self.update(bot_response: change_entity(Act.where(bot_id: self.bot_id, intent: self.intent).sample.bot_say))
     self.update(bot_response: change_entity(self.bot_response))
   end 
 end
 
+
 def change_entity(bot_response)
-    # self.bot_response.gsub(/@[\wа-я]+/i).with_index { |m, i| Entity.where(bot_id: self.bot_id, key: m[/[^@]+/], user_id: self.user_id).last.name if Entity.where(bot_id: self.bot_id, key: m[/[^@]+/], user_id: self.user_id).take  }
-    self.bot_response.gsub(/@[\wа-я]+/i).with_index { |m, i| Entity.where(bot_id: self.bot_id, key: m, user_id: self.user_id).last.name if Entity.where(bot_id: self.bot_id, key: m, user_id: self.user_id).take  }
+    self.bot_response.gsub(/@[\wа-я]+/i).with_index { |m, i| bot.entities.where(key: m, user_id: self.user_id).last.name if bot.entities.where(key: m, user_id: self.user_id).take}
 end
+
 
 #save @entity like @user_name from user_say
 def create_entity
@@ -96,100 +106,18 @@ def create_entity
   end 
 end
 
+
 def classification_failed_enquiry(*args)
     self.update_attribute(:bot_response, error_response)
     return false
 end
 
-# def self.greeting(id)
-#   BotAction.create(bot_response: "Привет! Меня зовут Хлои. Я умею находить интересные события рядом. Что из предложенного тебе может понравится?", user_id: id, created_at: Time.now, updated_at: Time.now, intent: "interests")
-# end
-
-# def hello
-#   self.update_attribute(:bot_response, "Интересные события на завтра:")
-# end
-
-# 3 nbayes iterates
-#  def nbayes_classification(user_input_tokens, method_name)
-#     nbayes = NBayes::Base.new(binarized: true)             #
-#     TRAINING_DATA[method_name.to_s].each do |key, value|   #getting the inner hash, ex: 'new_laptop_enquiry' hash
-#       category = key                                       #assigning key as category (class), ex: 'new_laptop_enquiry'
-#       #puts "\n\nCategory: #{category.inspect}\n\n"
-#       value.each do |str|
-#         #puts "\n\nString: #{str.inspect}\n\n"
-#         nbayes.train(str.split(/\s+/), category)           #Training the nbayes object, with each string under 'new_laptop_enquiry' class
-#       end
-#     end
- 
-#     nbayes.assume_uniform = true                           #
-#     result = nbayes.classify(user_input_tokens)            #classifying the input form user 
-#     #nbayes.dump('config/rembot/dump.yml')                 #dump of trained data, for us to observe how the classification is done
-#     result.each do |k, v|
-#       puts "\n#{(v * 100)} => #{k}\n"                      #display of classified log probabilities for each category
-#     end
-#     result.max_class                                       #final classified category, ex: 'new_laptop_enquiry'
-# end
-
-
-
-#classifications related to events
-#2 we understand the query is about the event
-#   def events_enquiry(user_input_tokens)
-#     send(nbayes_classification(user_input_tokens, __method__))
-#   end
-
-# #4
-#   def tomorrow_event_enquiry(*args)
-#     self.update_attribute(:bot_response, "Интересные события на завтра:")
-#     #some action triggers
-#     new_polymorphic_path('event')
-#   end
- 
-#   def event_index_enquiry(*args)
-#     # self.update_attribute(:bot_response, "Вот все события сегодня в городе:")
-#     mix = URI.parse("https://api.timepad.ru/v1/events.json").read
-#     mix = ActiveSupport::JSON.decode(mix)["values"]
-#     self.update_attribute(:bot_response, mix)
-#     #some action triggers
-#     polymorphic_path('events')
-#   end
- 
-  # def more_event_enquiry(*args)
-  #   laptop_count = Event.all.count
-  #   self.update_attribute(:bot_response, "There are events in total")
-  #   #some action triggers
-  #   return false
-  # end
-
-  
-
-  def filter_for_user?(user=nil)
-    user ||= current_user
-    if self.user_id == current_user.id
-      return self
-    end
-  end
- 
-
 
 private
 
-# def error_response
-#     ["Сори, не поняла, бывает.. давай еще разок",
-#      "Ты по-русски можешь сказать?... не понятно", 
-#      "Так... давай еще раз, но внятнее..",
-#      "Перефразируй, братюня..,
-#      Давай потолкуем.. давай потолкуем.. Короче не поняла я.."].sample
-#   end
- 
-# def strip_user_input
-#     self.user_input = self.user_input.squish
-# end
 
 def clean_user_input(user_input)
-    self.user_input = self.user_input.squish
-    # rm_spl_chars = user_input.downcase.gsub(/[^a-zA-Z0-9-#\s]/, '')
-    # rm_spl_chars.split(/\s+/)
+    self.user_input = self.user_input.squish 
     rm_spl_chars = user_input.downcase.split(/[^[:word:]]+/)
 end
 
