@@ -1,0 +1,13 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  bot_action: one
+  attachable_id: 1
+  attachable_type: MyString
+  bot: one
+
+two:
+  bot_action: two
+  attachable_id: 1
+  attachable_type: MyString
+  bot: two

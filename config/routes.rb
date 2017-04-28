@@ -27,7 +27,7 @@ Rails.application.routes.draw do
     scope module: :v1, constraints: ApiConstraints.new(version: 1, default: true) do
       resources :bots do
         member do
-          get :all_bot_actions
+          get :chat
           # get :lessons
         end
       end

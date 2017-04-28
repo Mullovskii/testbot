@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170416102212) do
+ActiveRecord::Schema.define(version: 20170428182702) do
 
   create_table "acts", force: :cascade do |t|
     t.string   "bot_say"
@@ -26,6 +26,17 @@ ActiveRecord::Schema.define(version: 20170416102212) do
     t.index ["bot_id"], name: "index_acts_on_bot_id"
     t.index ["lesson_id"], name: "index_acts_on_lesson_id"
     t.index ["user_id"], name: "index_acts_on_user_id"
+  end
+
+  create_table "attachements", force: :cascade do |t|
+    t.integer  "bot_action_id"
+    t.integer  "attachable_id"
+    t.string   "attachable_type"
+    t.integer  "bot_id"
+    t.datetime "created_at",      null: false
+    t.datetime "updated_at",      null: false
+    t.index ["bot_action_id"], name: "index_attachements_on_bot_action_id"
+    t.index ["bot_id"], name: "index_attachements_on_bot_id"
   end
 
   create_table "bot_actions", force: :cascade do |t|

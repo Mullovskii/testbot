@@ -36,9 +36,9 @@ module Api
         head :no_content
       end
 
-      # список всех сообщений бота
+      # уникальный чат бота и уникального юзера
       # GET /api/bots/:id/all_bot_actions
-      def all_bot_actions
+      def chat
         @all_bot_actions = @bot.bot_actions.where(user_id: nil) + @bot.bot_actions.where(user_id: current_user.id)
         @all_bot_actions = @all_bot_actions.sort_by &:created_at
         render :json => @all_bot_actions.to_json

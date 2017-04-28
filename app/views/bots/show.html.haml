@@ -1,7 +1,5 @@
-
+= BotAction.last.lesson
 - if current_user.present?
-  / = BotAction.destroy_all
-  = BotAction.last.inspect
 
   .col-xs-0
     = render 'layouts/chat_bot', bot_action: @bot_action, latest_bot_actions: @latest_bot_actions

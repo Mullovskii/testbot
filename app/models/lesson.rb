@@ -8,4 +8,5 @@ class Lesson < ApplicationRecord
   has_many :events
   has_many :checks
   has_many :keys
+  
 end
