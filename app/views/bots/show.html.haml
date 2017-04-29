@@ -1,6 +1,6 @@
-/ = BotAction.last.keys.inspect
 / = BotAction.destroy_all
 / =@bot.lessons.where(intent: "start_talk_intent").first
+= [] == nil
 - if current_user.present?
 
   .col-xs-0
@@ -26,17 +26,17 @@
 
 
 
-/ %h3
-/   - if current_user.subscriptions.where(bot_id: @bot.id).take
-/     = link_to "Отписаться", subscription_path(current_user.subscriptions.where(bot_id: @bot.id).take), method: :delete
+%h3
+  - if current_user.subscriptions.where(bot_id: @bot.id).take
+    = link_to "Отписаться", subscription_path(current_user.subscriptions.where(bot_id: @bot.id).take), method: :delete
 
 
-/   - else
-/     = form_for Subscription.new do |f|
-/       .field   
-/         = f.hidden_field :bot_id, value: @bot.id
-/         = f.hidden_field :user_id, value: current_user.id
-/         = f.submit 'Подписаться на бота'  
+  - else
+    = form_for Subscription.new do |f|
+      .field   
+        = f.hidden_field :bot_id, value: @bot.id
+        = f.hidden_field :user_id, value: current_user.id
+        = f.submit 'Подписаться на бота'  
 
 
 %p

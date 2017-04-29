@@ -32,5 +32,11 @@ class User < ApplicationRecord
     end
   end
 
+  def when_subscribed_to(bot)
+    if s = self.subscriptions.where(bot_id: bot.id).take
+      return s.created_at
+    end
+  end
+
 
 end

@@ -46,6 +46,7 @@ ActiveRecord::Schema.define(version: 20170428182702) do
     t.integer  "lesson_id"
     t.integer  "sequence"
     t.boolean  "waiting_response"
+    t.integer  "remind_over"
     t.integer  "user_id"
     t.integer  "bot_id"
     t.datetime "created_at",       null: false

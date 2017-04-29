@@ -33,6 +33,6 @@ class BotActionsController < ApplicationController
   private
  
   def bot_action_params
-    params.require(:bot_action).permit(:user_input, :user_id, :bot_id, :intent, :bot_response, :sequence, :waiting_response, :lesson_id )
+    params.require(:bot_action).permit(:user_input, :user_id, :bot_id, :intent, :bot_response, :sequence, :waiting_response, :lesson_id, :remind_over )
   end
 end
