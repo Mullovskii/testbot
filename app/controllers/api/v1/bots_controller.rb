@@ -39,13 +39,13 @@ module Api
       # уникальный чат бота и уникального юзера
       # GET /api/bots/:id/chat
       def chat
-        # @d = current_user.created_at.to_date.mjd - BotAction.last.created_at.to_date.mjd
-
         # смотрим все анонимные экшены, созданные после подписки юзера на бота, с пометкой "напомнить спустя Н дней"
         @remind_over_actions = []
-        @bot.bot_actions.where("created_at < ?", current_user.when_subscribed_to(@bot)).where.not(remind_over: nil).each do |bot_action|
+        now = Time.now.to_date.mjd
+        when_subscirbed = current_user.when_subscribed_to(@bot).to_date.mjd
+        @bot.bot_actions.where("created_at > ?", current_user.when_subscribed_to(@bot)).where.not(remind_over: nil).each do |bot_action|
           # проверяем прошло ли с момента подписки столько же дней, сколько в пометке экшена
-          if bot_action.remind_over == Time.now.to_date.mjd - current_user.when_subscribed_to(@bot).to_date.mjd
+          if bot_action.remind_over == now - when_subscirbed
             @remind_over_actions << bot_action
           end
         end

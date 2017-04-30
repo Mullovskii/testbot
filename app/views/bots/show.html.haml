@@ -1,6 +1,3 @@
-/ = BotAction.destroy_all
-/ =@bot.lessons.where(intent: "start_talk_intent").first
-= [] == nil
 - if current_user.present?
 
   .col-xs-0
